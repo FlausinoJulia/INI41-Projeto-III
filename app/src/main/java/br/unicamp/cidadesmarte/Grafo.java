@@ -1,6 +1,7 @@
 package br.unicamp.cidadesmarte;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -140,19 +141,28 @@ public class Grafo
 
     // PERCURSO EM PROFUNDIDADE //
 
+    // retorna a posicao do primeiro vértice adjacente não visitado do vértice v
     private int obterVerticeAdjacenteNaoVisitado(int v)
     {
+        // percorremos a linha do vértice v
         for (int j = 0; j < numVerts; j++)
+            // se encontramos um vértice adjacente, verificamos se ele foi visitado
             if ((matriz[v][j] != 0) && !vertices[j].isFoiVisitado())
-                return j;
+                return j; // se ele não foi visitado, retornamos esse vértice adjacente
 
         return -1;
     }
 
+    // percorre todo o grafo, partindo do primeiro vertice
     public void percursoEmProfundidade(TextView tv)
     {
         tv.setText("");
         Stack<Integer> gPilha = new Stack<Integer>();
+
+        // limpando o "foi visitado" de todos os vertices
+        for (int i = 0; i <= numVerts - 1; i++)
+            vertices[i].setFoiVisitado(false);
+
         vertices[0].setFoiVisitado(true);
         exibirVertice(0, tv);
         gPilha.push(0);
@@ -171,48 +181,26 @@ public class Grafo
             }
         }
 
-        for (int j = 0; j <= numVerts - 1; j++)
-            vertices[j].setFoiVisitado(false);
+        // limpando o "foi visitado" de todos os vertices
+        for (int i = 0; i <= numVerts - 1; i++)
+            vertices[i].setFoiVisitado(false);
     }
 
-    /*
-    // percurso em profundidade
-
-    private int ObterVerticeAdjacenteNaoVisitado(int v)
+    public void processarNo(int i)
     {
-      for (int j = 0; j < numVerts; j++)
-        if ((adjMatrix[v, j] != 0) && (!vertices[j].FoiVisitado))
-          return j;
-      return -1;
+        String rotulo = vertices[i].getRotulo();
+        Log.i("rotulo", rotulo);
     }
 
-    public void PercursoEmProfundidade(TextBox txt)
+    public void percursoEmProfundidadeRec(int part)
     {
-      txt.Clear();
-      PilhaVetor<int> gPilha = new PilhaVetor<int>(); // para guardar a sequência de vértices
-      vertices[0].FoiVisitado = true;
-      gPilha.Empilhar(0);
-      ExibirVertice(0, txt);
-      int v;
-      while (!gPilha.EstaVazia)
-      {
-        v = ObterVerticeAdjacenteNaoVisitado(gPilha.OTopo());
-        if (v == -1)
-          gPilha.Desempilhar();
-        else
-        {
-          vertices[v].FoiVisitado = true;
-          ExibirVertice(v, txt);
-          gPilha.Empilhar(v);
-        }
-      }
-
-      // limpa rastreio de visitas npara novos percursos não
-      // ficarem poluídos com o percurso anterior
-      for (int j = 0; j <= numVerts - 1; j++)
-        vertices[j].FoiVisitado = false;
+        int i;
+        processarNo(part);
+        vertices[part].setFoiVisitado(true);
+        for (i = 0; i < numVerts; ++i)
+            if (matriz[part][i] == 1 && !vertices[i].isFoiVisitado())
+                percursoEmProfundidadeRec(i);
     }
-    */
 
     // PERCURSO EM LARGURA //
 
