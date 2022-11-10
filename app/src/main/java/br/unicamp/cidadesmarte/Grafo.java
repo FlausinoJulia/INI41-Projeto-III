@@ -1,6 +1,7 @@
 package br.unicamp.cidadesmarte;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -150,8 +151,10 @@ public class Grafo
 
     // PERCURSO EM PROFUNDIDADE //
 
+    // retorna a posicao do primeiro vértice adjacente não visitado do vértice v
     private int obterVerticeAdjacenteNaoVisitado(int v)
     {
+        // percorremos a linha do vértice v
         for (int j = 0; j < numVerts; j++)
             if ((matriz[v][j] != infinito) && !vertices[j].isFoiVisitado())
                 return j;
@@ -159,10 +162,16 @@ public class Grafo
         return -1;
     }
 
+    // percorre todo o grafo, partindo do primeiro vertice
     public void percursoEmProfundidade(TextView tv)
     {
         tv.setText("");
         Stack<Integer> gPilha = new Stack<Integer>();
+
+        // limpando o "foi visitado" de todos os vertices
+        for (int i = 0; i <= numVerts - 1; i++)
+            vertices[i].setFoiVisitado(false);
+
         vertices[0].setFoiVisitado(true);
         exibirVertice(0, tv);
         gPilha.push(0);
@@ -181,8 +190,25 @@ public class Grafo
             }
         }
 
-        for (int j = 0; j <= numVerts - 1; j++)
-            vertices[j].setFoiVisitado(false);
+        // limpando o "foi visitado" de todos os vertices
+        for (int i = 0; i <= numVerts - 1; i++)
+            vertices[i].setFoiVisitado(false);
+    }
+
+    public void processarNo(int i)
+    {
+        String rotulo = vertices[i].getRotulo();
+        Log.i("rotulo", rotulo);
+    }
+
+    public void percursoEmProfundidadeRec(int part)
+    {
+        int i;
+        processarNo(part);
+        vertices[part].setFoiVisitado(true);
+        for (i = 0; i < numVerts; ++i)
+            if (matriz[part][i] == 1 && !vertices[i].isFoiVisitado())
+                percursoEmProfundidadeRec(i);
     }
 
     // PERCURSO EM LARGURA //

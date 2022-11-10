@@ -8,57 +8,126 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="48dp"
-        android:layout_height="32dp"
+        android:layout_width="37dp"
+        android:layout_height="29dp"
+        android:gravity="center"
         android:text="De"
-        android:textSize="24dp"
+        android:textColor="@color/black"
+        android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.023"
-        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.094" />
+        app:layout_constraintVertical_bias="0.042" />
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="258dp"
-        android:layout_height="40dp"
+        android:layout_width="210dp"
+        android:layout_height="39dp"
         android:textColor="@color/black"
+        android:textSize="24dp"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.607"
+        app:layout_constraintHorizontal_bias="0.145"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textSize="24dp"
-        app:layout_constraintVertical_bias="0.083" />
+        app:layout_constraintVertical_bias="0.024" />
 
     <TextView
-        android:layout_width="61dp"
-        android:layout_height="37dp"
-        android:textColor="@color/black"
+        android:layout_width="46dp"
+        android:layout_height="33dp"
         android:text="Para"
-        android:textSize="24dp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.023"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.256" />
+        app:layout_constraintVertical_bias="0.152" />
 
     <Spinner
         android:id="@+id/spinner2"
-        android:layout_width="258dp"
-        android:layout_height="40dp"
+        android:layout_width="210dp"
+        android:layout_height="39dp"
+        android:textColor="@color/black"
         android:textSize="24dp"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.607"
-        android:textColor="@color/black"
+        app:layout_constraintHorizontal_bias="0.145"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.253" />
+        app:layout_constraintVertical_bias="0.147" />
+
+    <ImageView
+        android:layout_width="423dp"
+        android:layout_height="247dp"
+        android:src="@drawable/mapa"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_gravity="center"
+        app:layout_constraintVertical_bias="0.054" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="119dp"
+        android:layout_height="41dp"
+        android:text="Recursão"
+        android:textSize="18sp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.026"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.297" />
+
+    <CheckBox
+        android:id="@+id/checkBox2"
+        android:layout_width="119dp"
+        android:layout_height="41dp"
+        android:gravity="center"
+        android:text="Dijkstra"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.026"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.408" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.259"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:backgroundTint="#009688"
+        app:layout_constraintVertical_bias="0.352"
+        android:text="Buscar"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="266dp"
+        android:layout_height="197dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.034"
+        android:layout_gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.981" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
