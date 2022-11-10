@@ -17,6 +17,13 @@ public class Grafo
     int numVerts;
     // DataGridView dgv; // aqui seria algum componente da activity?
 
+    // DIJKSTRA
+    DistOriginal[] percurso;
+    int infinito = Integer.MAX_VALUE;
+    int verticeAtual;     // global que indica o vértice atualmente sendo visitado
+    int doInicioAteAtual; // global usada para ajustar menor caminho com Djikstra
+    int nTree;
+
     public Grafo()
     {
         // this.dgv = dgv; // dgv seria passado como parametro
@@ -24,9 +31,12 @@ public class Grafo
         vertices = new Vertice[NUM_VERTICES];
         matriz = new int[NUM_VERTICES][NUM_VERTICES];
         numVerts = 0;
+        nTree = 0;
         for (int i = 0; i < NUM_VERTICES; i++)
             for (int j = 0; j < NUM_VERTICES; j++)
-                matriz[i][j] = 0;
+                matriz[i][j] = infinito;
+
+        percurso = new DistOriginal[NUM_VERTICES];
     }
 
     // adiciona um novo vértice, com o rótulo passado por parametro, no vetor de vertices
@@ -67,7 +77,7 @@ public class Grafo
             // percorremos cada coluna dessa linha
             for (int coluna = 0; coluna < numVerts; coluna++)
                 // vemos se tem uma ligação entre o vértice da linha e o vértice da coluna
-                if (matriz[linha][coluna] > 0)
+                if (matriz[linha][coluna] != infinito)
                 {
                     temAresta = true; // se tem, indicamos que essa linha possui sucesores
                     break;            // paramos de percorrer a linha, porque achamos um sucessor nesse vértice,
@@ -143,7 +153,7 @@ public class Grafo
     private int obterVerticeAdjacenteNaoVisitado(int v)
     {
         for (int j = 0; j < numVerts; j++)
-            if ((matriz[v][j] != 0) && !vertices[j].isFoiVisitado())
+            if ((matriz[v][j] != infinito) && !vertices[j].isFoiVisitado())
                 return j;
 
         return -1;
@@ -175,45 +185,6 @@ public class Grafo
             vertices[j].setFoiVisitado(false);
     }
 
-    /*
-    // percurso em profundidade
-
-    private int ObterVerticeAdjacenteNaoVisitado(int v)
-    {
-      for (int j = 0; j < numVerts; j++)
-        if ((adjMatrix[v, j] != 0) && (!vertices[j].FoiVisitado))
-          return j;
-      return -1;
-    }
-
-    public void PercursoEmProfundidade(TextBox txt)
-    {
-      txt.Clear();
-      PilhaVetor<int> gPilha = new PilhaVetor<int>(); // para guardar a sequência de vértices
-      vertices[0].FoiVisitado = true;
-      gPilha.Empilhar(0);
-      ExibirVertice(0, txt);
-      int v;
-      while (!gPilha.EstaVazia)
-      {
-        v = ObterVerticeAdjacenteNaoVisitado(gPilha.OTopo());
-        if (v == -1)
-          gPilha.Desempilhar();
-        else
-        {
-          vertices[v].FoiVisitado = true;
-          ExibirVertice(v, txt);
-          gPilha.Empilhar(v);
-        }
-      }
-
-      // limpa rastreio de visitas npara novos percursos não
-      // ficarem poluídos com o percurso anterior
-      for (int j = 0; j <= numVerts - 1; j++)
-        vertices[j].FoiVisitado = false;
-    }
-    */
-
     // PERCURSO EM LARGURA //
 
     public void percursoPorLargura(TextView tv)
@@ -240,4 +211,60 @@ public class Grafo
             vertices[i].setFoiVisitado(false);
     }
 
+
+    // ARVORE GERADORA MINIMA //
+    public void arvoreGeradoraMinima(int primeiro, TextView tv)
+    {
+        tv.setText("");
+        Stack<Integer> gPilha = new Stack<Integer>();
+        vertices[primeiro].setFoiVisitado(true);
+        gPilha.push(primeiro);
+        int currVertex, ver;
+        while (gPilha.size() > 0)
+        {
+            currVertex = gPilha.peek();
+            ver = obterVerticeAdjacenteNaoVisitado(currVertex);
+            if (ver == -1)
+                gPilha.pop();
+            else
+            {
+                vertices[ver].setFoiVisitado(true);
+                gPilha.push(ver);
+                exibirVertice(currVertex, tv);
+                String texto = tv.getText().toString() + "--> ";
+                tv.setText(texto);
+                exibirVertice(ver, tv);
+                String texto2 = tv.getText().toString() + "  ";
+                tv.setText(texto2);
+            }
+        }
+
+        for (int i = 0; i <= numVerts - 1; i++)
+            vertices[i].setFoiVisitado(false);
+    }
+
+    // DIJKSTRA
+    public String caminho (int inicioDoPercurso, int finalDoPercurso, ListBox lista)
+    {
+        for (int j = 0; j < numVerts; j++)
+            vertices[j].setFoiVisitado(false);
+
+        vertices[inicioDoPercurso].setFoiVisitado(true);
+        for (int j = 0; j < numVerts; j++)
+        {
+            int tempDist = matriz[inicioDoPercurso][j];
+            percurso[j] = new DistOriginal(inicioDoPercurso, tempDist);
+        }
+
+        for (int nTree = 0; nTree < numVerts; nTree++)
+        {
+            int indiceDoMenor = obterMenor();
+            int distanciaMinima = percurso[indiceDoMenor].distancia;
+
+            verticeAtual = indiceDoMenor;
+            doInicioAteAtual = percurso[indiceDoMenor].distancia;
+
+            vertices[verticeAtual].setFoiVisitado(true);
+        }
+    }
 }
