@@ -1,11 +1,9 @@
 package br.unicamp.cidadesmarte;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.Queue;
-import java.util.Stack;
 
-public class PilhaVetor<Dado> {
+public class PilhaVetor<Dado> implements IStack<Dado>
+{
     private ArrayList<Dado> p;
     int topo;
 
@@ -14,28 +12,39 @@ public class PilhaVetor<Dado> {
         topo = -1;
     }
 
-    private PilhaVetor() {
+    public PilhaVetor() {
         p = new ArrayList<Dado>(500);
         topo = -1;
     }
 
-    public int Tamanho = topo + 1;
-
-    public boolean EstaVazia = topo < 0;
-
-    public void Empilhar(Dado dado) throws Exception {
-        if (Tamanho == p.size())
+    public void empilhar(Dado dado) throws Exception {
+        if (getTamanho() == p.size())
             throw new Exception("Pilha cheia (Stack Overflow)!");
 
         topo = topo + 1;    // ou apenas
         p.set(topo, dado);     // p[++topo] = dado;
     }
 
-    public Dado Desempilhar() throws Exception {
-        if (EstaVazia)
+    public Dado desempilhar() throws Exception {
+        if (getEstaVazia())
             throw new Exception("Pilha vazia (Stack Underflow)!");
         Dado dadoEmpilhado = p.get(topo); // ou
         topo = topo - 1;              // Dado dadoEmpilhado = p[topo--];
         return dadoEmpilhado;
+    }
+
+    @Override
+    public Dado oTopo() {
+        return p.get(topo);
+    }
+
+    @Override
+    public int getTamanho() {
+        return topo + 1;
+    }
+
+    @Override
+    public boolean getEstaVazia() {
+        return topo < 0;
     }
 }

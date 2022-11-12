@@ -1,12 +1,7 @@
 package br.unicamp.cidadesmarte;
 
-import android.content.Context;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
 import java.util.Queue;
 import java.util.Stack;
 
@@ -131,7 +126,7 @@ public class Grafo
 
     public String ordenacaoTopologica()
     {
-        Stack<String> gPilha = new Stack<String>();
+        PilhaVetor<String> gPilha = new PilhaVetor<String>();
 
         int origVerts = numVerts;
         while (numVerts > 0)
@@ -139,7 +134,7 @@ public class Grafo
             int currVertex = semSucessores();
             if (currVertex == -1)
                 return "Erro: grafo possui ciclos";
-            gPilha.push(vertices[currVertex].getRotulo());
+            gPilha.(vertices[currVertex].getRotulo());
             removerVertice(currVertex);
         }
         String resultado = "Sequencia da Ordenacao Topologica: ";
@@ -291,6 +286,108 @@ public class Grafo
             doInicioAteAtual = percurso[indiceDoMenor].distancia;
 
             vertices[verticeAtual].setFoiVisitado(true);
+            ajustarMenorCaminho(lista);
         }
+
+        return exibirPercursos(inicioDoPercurso, finalDoPercurso, lista);
+    }
+
+    public int obterMenor()
+    {
+        int distanciaMinima = infinito;
+        int indiceDaMinima = 0;
+        for (int j = 0; j < numVerts; j++)
+        {
+            if (!(vertices[j].isFoiVisitado()) && (percurso[j].distancia < distanciaMinima))
+            {
+                distanciaMinima = percurso[j].distancia;
+                indiceDaMinima = j;
+            }
+        }
+
+        return indiceDaMinima;
+    }
+
+    public void ajustarMenorCaminho(ListBox lista)
+    {
+        for (int coluna = 0; coluna < numVerts; coluna++)
+        {
+            if (!vertices[coluna].isFoiVisitado())
+            {
+                int atualAteMargem = matriz[verticeAtual][coluna];
+                int doInicioAteMargem = doInicioAteAtual + atualAteMargem;
+                int distanciaDoCaminho = percurso[coluna].distancia;
+
+                if (doInicioAteMargem < distanciaDoCaminho)
+                {
+                    percurso[coluna].verticePai = verticeAtual;
+                    percurso[coluna].distancia = doInicioAteMargem;
+                    exibirTabela(lista);
+                }
+            }
+        }
+
+        lista.Items.Add("====caminho ajustado====");
+        lista.Items.Add(" ");
+    }
+
+    public void exibirTabela(ListBox lista)
+    {
+        String dist = "";
+        lista.Items.Add("Vértice\tVisitado?\tPeso\tVindo de");
+        for (int i = 0; i < numVerts; i++)
+        {
+            if (percurso[i].distancia == infinito)
+                dist = "inf";
+            else
+                dist = percurso[i].distancia + "";
+            lista.Items.Add(vertices[i].getRotulo() + "\t" + vertices[i].isFoiVisitado() +
+                    "\t\t" + dist + "\t" + vertices[percurso[i].verticePai].getRotulo());
+        }
+        lista.Items.Add("-----------------------------------------------------");
+    }
+
+    public String exibirPercursos(int inicioDoPercurso, int finalDoPercurso,
+                                  ListBox lista)
+    {
+        String resultado = "";
+        for (int j = 0; j < numVerts; j++)
+        {
+            resultado += vertices[j].getRotulo() + "=";
+            if (percurso[j].distancia == infinito)
+                resultado += "inf";
+            else
+                resultado += percurso[j].distancia+" ";
+            String pai = vertices[percurso[j].verticePai].getRotulo();
+            resultado += "(" + pai + ") ";
+        }
+        lista.Items.Add(resultado);
+        lista.Items.Add(" ");
+        lista.Items.Add(" ");
+        lista.Items.Add("Caminho entre " + vertices[inicioDoPercurso].getRotulo() +
+                " e " + vertices[finalDoPercurso].getRotulo());
+        lista.Items.Add(" ");
+        int onde = finalDoPercurso;
+        Stack<String> pilha = new Stack<String>();
+        int cont = 0;
+        while (onde != inicioDoPercurso)
+        {
+            onde = percurso[onde].verticePai;
+            pilha.push(vertices[onde].getRotulo());
+            cont++;
+        }
+        resultado = "";
+        while (pilha.size() != 0)
+        {
+            resultado += pilha.pop();
+            if (pilha.size() != 0)
+                resultado += " --> ";
+        }
+        if ((cont == 1) && (percurso[finalDoPercurso].distancia == infinito))
+            resultado = "Não há caminho";
+        else
+            resultado += " --> " + vertices[finalDoPercurso].getRotulo();
+
+        return resultado;
     }
 }
