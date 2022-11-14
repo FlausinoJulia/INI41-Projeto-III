@@ -14,7 +14,7 @@ public class Grafo
     // DataGridView dgv; // aqui seria algum componente da activity?
 
     // DIJKSTRA
-    DistOriginal[] percurso;
+    DistOriginal[] percurso; // vetor que vai guarda os caminhos que vão sendo encontrados
     int infinito = Integer.MAX_VALUE;
     int verticeAtual;     // global que indica o vértice atualmente sendo visitado
     int doInicioAteAtual; // global usada para ajustar menor caminho com Djikstra
@@ -127,14 +127,14 @@ public class Grafo
     public String ordenacaoTopologica()
     {
         PilhaVetor<String> gPilha = new PilhaVetor<String>();
-
         int origVerts = numVerts;
         while (numVerts > 0)
         {
             int currVertex = semSucessores();
             if (currVertex == -1)
                 return "Erro: grafo possui ciclos";
-            gPilha.(vertices[currVertex].getRotulo());
+            gPilha.empilhar(vertices[currVertex].getRotulo());
+
             removerVertice(currVertex);
         }
         String resultado = "Sequencia da Ordenacao Topologica: ";

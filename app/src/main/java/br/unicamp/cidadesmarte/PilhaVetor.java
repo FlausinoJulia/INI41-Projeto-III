@@ -1,41 +1,31 @@
 package br.unicamp.cidadesmarte;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PilhaVetor<Dado> implements IStack<Dado>
 {
-    private ArrayList<Dado> p;
+    private Dado[] p;
     int topo;
 
     public PilhaVetor(int maximo){
-        p = new ArrayList<Dado>(maximo);
+        this.p = (Dado[]) new Object[maximo];
         topo = -1;
     }
 
     public PilhaVetor() {
-        p = new ArrayList<Dado>(500);
+        p = (Dado[]) new Object[500];
         topo = -1;
     }
 
-    public void empilhar(Dado dado) throws Exception {
-        if (getTamanho() == p.size())
-            throw new Exception("Pilha cheia (Stack Overflow)!");
-
-        topo = topo + 1;    // ou apenas
-        p.set(topo, dado);     // p[++topo] = dado;
-    }
-
-    public Dado desempilhar() throws Exception {
-        if (getEstaVazia())
-            throw new Exception("Pilha vazia (Stack Underflow)!");
-        Dado dadoEmpilhado = p.get(topo); // ou
-        topo = topo - 1;              // Dado dadoEmpilhado = p[topo--];
-        return dadoEmpilhado;
-    }
-
     @Override
-    public Dado oTopo() {
-        return p.get(topo);
+    public Dado oTopo() throws Exception {
+        if (getEstaVazia())
+            throw new Exception("Underflow - pilha vazia!");
+
+        Dado dadoEmpilhado = p[topo];
+
+        return dadoEmpilhado;
     }
 
     @Override
@@ -46,5 +36,32 @@ public class PilhaVetor<Dado> implements IStack<Dado>
     @Override
     public boolean getEstaVazia() {
         return topo < 0;
+    }
+
+    public void empilhar(Dado dado) throws Exception {
+        if (getTamanho() == p.length)
+            throw new Exception("Pilha cheia (Stack Overflow)!");
+
+        topo = topo + 1;
+        p[topo] = dado;
+    }
+
+    public Dado desempilhar() throws Exception {
+        if (getEstaVazia())
+            throw new Exception("Underflo - pilha vazia!");
+
+        Dado dadoEmpilhado = p[topo];
+        topo = topo - 1;
+        return dadoEmpilhado;
+    }
+
+    public List<Dado> listarDadosDaPilha()
+    {
+        List<Dado> lista = new ArrayList<>();
+
+        for (int i = 0; i <= topo; i++)
+            lista.add(p[i]);
+
+        return lista;
     }
 }
