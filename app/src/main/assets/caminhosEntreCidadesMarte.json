@@ -1,0 +1,198 @@
+[
+  {
+    "cidadeDeOrigem": "Acheron",
+    "cidadeDeDestino": "Echus Overlook",
+    "distanciaCaminho": 2300,
+    "tempoCaminho": 19,
+    "custoCaminho": 100
+  },
+  {
+    "cidadeDeOrigem": "Arrakeen",
+    "cidadeDeDestino": "Gondor",
+    "distanciaCaminho": 3500,
+    "tempoCaminho": 17,
+    "custoCaminho": 100
+  },
+  {
+    "cidadeDeOrigem": "Bradbury",
+    "cidadeDeDestino": "Odessa",
+    "distanciaCaminho": 4800,
+    "tempoCaminho": 27,
+    "custoCaminho": 160
+  },
+  {
+    "cidadeDeOrigem": "Bradbury",
+    "cidadeDeDestino": "Underhill",
+    "distanciaCaminho": 3000,
+    "tempoCaminho": 18,
+    "custoCaminho": 110
+  },
+  {
+    "cidadeDeOrigem": "Burroughs",
+    "cidadeDeDestino": "Arena",
+    "distanciaCaminho": 1000,
+    "tempoCaminho": 8,
+    "custoCaminho": 60
+  },
+  {
+    "cidadeDeOrigem": "Burroughs",
+    "cidadeDeDestino": "Lowell",
+    "distanciaCaminho": 3980,
+    "tempoCaminho": 20,
+    "custoCaminho": 120
+  },
+  {
+    "cidadeDeOrigem": "Cairo",
+    "cidadeDeDestino": "Senzeni Na",
+    "distanciaCaminho": 2000,
+    "tempoCaminho": 13,
+    "custoCaminho": 80
+  },
+  {
+    "cidadeDeOrigem": "Cairo",
+    "cidadeDeDestino": "Underhill",
+    "distanciaCaminho": 4000,
+    "tempoCaminho": 20,
+    "custoCaminho": 120
+  },
+  {
+    "cidadeDeOrigem": "Dumont",
+    "cidadeDeDestino": "Burroughs",
+    "distanciaCaminho": 3800,
+    "tempoCaminho": 18,
+    "custoCaminho": 95
+  },
+  {
+    "cidadeDeOrigem": "Echus Overlook",
+    "cidadeDeDestino": "Cairo",
+    "distanciaCaminho": 1900,
+    "tempoCaminho": 15,
+    "custoCaminho": 90
+  },
+  {
+    "cidadeDeOrigem": "Echus Overlook",
+    "cidadeDeDestino": "Sheffield",
+    "distanciaCaminho": 1700,
+    "tempoCaminho": 13,
+    "custoCaminho": 80
+  },
+  {
+    "cidadeDeOrigem": "Gondor",
+    "cidadeDeDestino": "Lowell",
+    "distanciaCaminho": 2000,
+    "tempoCaminho": 16,
+    "custoCaminho": 80
+  },
+  {
+    "cidadeDeOrigem": "Gondor",
+    "cidadeDeDestino": "Moria",
+    "distanciaCaminho": 1200,
+    "tempoCaminho": 10,
+    "custoCaminho": 60
+  },
+  {
+    "cidadeDeOrigem": "Nicosia",
+    "cidadeDeDestino": "Arrakeen",
+    "distanciaCaminho": 2200,
+    "tempoCaminho": 14,
+    "custoCaminho": 75
+  },
+  {
+    "cidadeDeOrigem": "Odessa",
+    "cidadeDeDestino": "Bakhuysen",
+    "distanciaCaminho": 1400,
+    "tempoCaminho": 11,
+    "custoCaminho": 65
+  },
+  {
+    "cidadeDeOrigem": "Odessa",
+    "cidadeDeDestino": "Esperanca",
+    "distanciaCaminho": 4030,
+    "tempoCaminho": 21,
+    "custoCaminho": 100
+  },
+  {
+    "cidadeDeOrigem": "Odessa",
+    "cidadeDeDestino": "Lakefront",
+    "distanciaCaminho": 1010,
+    "tempoCaminho": 7,
+    "custoCaminho": 50
+  },
+  {
+    "cidadeDeOrigem": "Odessa",
+    "cidadeDeDestino": "Perseveranca",
+    "distanciaCaminho": 1500,
+    "tempoCaminho": 12,
+    "custoCaminho": 75
+  },
+  {
+    "cidadeDeOrigem": "Odessa",
+    "cidadeDeDestino": "Temperanca",
+    "distanciaCaminho": 2350,
+    "tempoCaminho": 14,
+    "custoCaminho": 90
+  },
+  {
+    "cidadeDeOrigem": "Rowan",
+    "cidadeDeDestino": "Lakefront",
+    "distanciaCaminho": 2100,
+    "tempoCaminho": 17,
+    "custoCaminho": 95
+  },
+  {
+    "cidadeDeOrigem": "Rowan",
+    "cidadeDeDestino": "Odessa",
+    "distanciaCaminho": 1100,
+    "tempoCaminho": 9,
+    "custoCaminho": 60
+  },
+  {
+    "cidadeDeOrigem": "Senzeni Na",
+    "cidadeDeDestino": "Gondor",
+    "distanciaCaminho": 5500,
+    "tempoCaminho": 30,
+    "custoCaminho": 200
+  },
+  {
+    "cidadeDeOrigem": "Sheffield",
+    "cidadeDeDestino": "Cairo",
+    "distanciaCaminho": 1100,
+    "tempoCaminho": 10,
+    "custoCaminho": 70
+  },
+  {
+    "cidadeDeOrigem": "Sheffield",
+    "cidadeDeDestino": "Nicosia",
+    "distanciaCaminho": 300,
+    "tempoCaminho": 2,
+    "custoCaminho": 30
+  },
+  {
+    "cidadeDeOrigem": "Sheffield",
+    "cidadeDeDestino": "Tharsis",
+    "distanciaCaminho": 400,
+    "tempoCaminho": 5,
+    "custoCaminho": 100
+  },
+  {
+    "cidadeDeOrigem": "Temperanca",
+    "cidadeDeDestino": "Gondor",
+    "distanciaCaminho": 3900,
+    "tempoCaminho": 20,
+    "custoCaminho": 110
+  },
+  {
+    "cidadeDeOrigem": "Underhill",
+    "cidadeDeDestino": "Dumont",
+    "distanciaCaminho": 4050,
+    "tempoCaminho": 20,
+    "custoCaminho": 110
+  },
+  {
+    "cidadeDeOrigem": "Underhill",
+    "cidadeDeDestino": "Rowan",
+    "distanciaCaminho": 4140,
+    "tempoCaminho": 21,
+    "custoCaminho": 130
+  }
+]

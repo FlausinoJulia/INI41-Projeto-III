@@ -6,7 +6,15 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 public class MainActivity extends AppCompatActivity {
+
+    List<Cidade> cidades;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,5 +31,16 @@ public class MainActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
 
 
+        cidades = new ArrayList<Cidade>();
+
+        String jsonFileString = Utils.getJsonFromAssets(getApplicationContext(), "cidadesMarte.json");
+        Gson gson = new Gson();
+
+        Cidade cidade = gson.fromJson(jsonFileString, Cidade.class);
+
+
+
     }
+
+
 }
