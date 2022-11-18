@@ -1,11 +1,15 @@
 package br.unicamp.cidadesmarte;
 
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.Queue;
 import java.util.Stack;
 
-public class Grafo
+public class Grafo extends RecyclerView
 {
     private final int NUM_VERTICES = 20;
     private Vertice[] vertices;
@@ -265,7 +269,7 @@ public class Grafo
     }
 
     // DIJKSTRA
-    public String caminho (int inicioDoPercurso, int finalDoPercurso, ListBox lista)
+    public String caminho (int inicioDoPercurso, int finalDoPercurso, RecyclerView lista)
     {
         for (int j = 0; j < numVerts; j++)
             vertices[j].setFoiVisitado(false);
@@ -308,7 +312,7 @@ public class Grafo
         return indiceDaMinima;
     }
 
-    public void ajustarMenorCaminho(ListBox lista)
+    public void ajustarMenorCaminho(RecyclerView lista)
     {
         for (int coluna = 0; coluna < numVerts; coluna++)
         {
@@ -331,7 +335,7 @@ public class Grafo
         lista.Items.Add(" ");
     }
 
-    public void exibirTabela(ListBox lista)
+    public void exibirTabela(RecyclerView lista)
     {
         String dist = "";
         lista.Items.Add("Vértice\tVisitado?\tPeso\tVindo de");
@@ -348,7 +352,7 @@ public class Grafo
     }
 
     public String exibirPercursos(int inicioDoPercurso, int finalDoPercurso,
-                                  ListBox lista)
+                                  ListView lista)
     {
         String resultado = "";
         for (int j = 0; j < numVerts; j++)
@@ -361,6 +365,7 @@ public class Grafo
             String pai = vertices[percurso[j].verticePai].getRotulo();
             resultado += "(" + pai + ") ";
         }
+
         lista.Items.Add(resultado);
         lista.Items.Add(" ");
         lista.Items.Add(" ");

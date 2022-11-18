@@ -2,8 +2,8 @@ package br.unicamp.cidadesmarte;
 
 public class DistOriginal // distancia desde o original
 {
-    private int distancia;
-    private int verticePai;
+    public int distancia;
+    public int verticePai;
 
     public DistOriginal(int vp, int d)
     {
