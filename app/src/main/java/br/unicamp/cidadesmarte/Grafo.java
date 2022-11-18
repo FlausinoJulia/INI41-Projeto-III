@@ -1,15 +1,17 @@
 package br.unicamp.cidadesmarte;
 
 import android.util.Log;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
-public class Grafo extends RecyclerView
+public class Grafo
 {
     private final int NUM_VERTICES = 20;
     private Vertice[] vertices;
@@ -269,7 +271,7 @@ public class Grafo extends RecyclerView
     }
 
     // DIJKSTRA
-    public String caminho (int inicioDoPercurso, int finalDoPercurso, RecyclerView lista)
+    public String caminho (int inicioDoPercurso, int finalDoPercurso, List<String> lista)
     {
         for (int j = 0; j < numVerts; j++)
             vertices[j].setFoiVisitado(false);
@@ -312,7 +314,7 @@ public class Grafo extends RecyclerView
         return indiceDaMinima;
     }
 
-    public void ajustarMenorCaminho(RecyclerView lista)
+    public void ajustarMenorCaminho(List<String> lista)
     {
         for (int coluna = 0; coluna < numVerts; coluna++)
         {
@@ -331,28 +333,28 @@ public class Grafo extends RecyclerView
             }
         }
 
-        lista.Items.Add("====caminho ajustado====");
-        lista.Items.Add(" ");
+        lista.add("====caminho ajustado====");
+        lista.add(" ");
     }
 
-    public void exibirTabela(RecyclerView lista)
+    public void exibirTabela(List<String> lista)
     {
         String dist = "";
-        lista.Items.Add("Vértice\tVisitado?\tPeso\tVindo de");
+        lista.add("Vértice\tVisitado?\tPeso\tVindo de");
         for (int i = 0; i < numVerts; i++)
         {
             if (percurso[i].distancia == infinito)
                 dist = "inf";
             else
                 dist = percurso[i].distancia + "";
-            lista.Items.Add(vertices[i].getRotulo() + "\t" + vertices[i].isFoiVisitado() +
+            lista.add(vertices[i].getRotulo() + "\t" + vertices[i].isFoiVisitado() +
                     "\t\t" + dist + "\t" + vertices[percurso[i].verticePai].getRotulo());
         }
-        lista.Items.Add("-----------------------------------------------------");
+        lista.add("-----------------------------------------------------");
     }
 
     public String exibirPercursos(int inicioDoPercurso, int finalDoPercurso,
-                                  ListView lista)
+                                  List<String> lista)
     {
         String resultado = "";
         for (int j = 0; j < numVerts; j++)
@@ -366,12 +368,12 @@ public class Grafo extends RecyclerView
             resultado += "(" + pai + ") ";
         }
 
-        lista.Items.Add(resultado);
-        lista.Items.Add(" ");
-        lista.Items.Add(" ");
-        lista.Items.Add("Caminho entre " + vertices[inicioDoPercurso].getRotulo() +
+        lista.add(resultado);
+        lista.add(" ");
+        lista.add(" ");
+        lista.add("Caminho entre " + vertices[inicioDoPercurso].getRotulo() +
                 " e " + vertices[finalDoPercurso].getRotulo());
-        lista.Items.Add(" ");
+        lista.add(" ");
         int onde = finalDoPercurso;
         Stack<String> pilha = new Stack<String>();
         int cont = 0;
