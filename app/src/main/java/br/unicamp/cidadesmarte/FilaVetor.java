@@ -11,7 +11,7 @@ public class FilaVetor<Tipo> implements IQueue<Tipo> {
     private ArrayList<Tipo> F; // vetor de objetos genéricos, com tamanho genérico,
     // usado como área de armazenamento
     private int inicio = 0, // índice do início da fila
-            fim = 0;    // índice do fim da fila
+                fim = 0;    // índice do fim da fila
 
     public FilaVetor()// construtor que utiliza o default MAXIMO
     {
@@ -28,7 +28,7 @@ public class FilaVetor<Tipo> implements IQueue<Tipo> {
     @Override
     public void enfileirar(Tipo elemento) throws Exception {
         if (getTamanho() == posicoes - 1)
-            throw new FilaCheiaException("Fila cheia (overflow)");
+            throw new Exception("Fila cheia (overflow)");
         F.set(fim, elemento);                 // inclui elemento na primeira posição livre
         fim = (fim + 1) % posicoes; // calcula próxima posição livre
     }
@@ -37,7 +37,7 @@ public class FilaVetor<Tipo> implements IQueue<Tipo> {
     public Tipo retirar() throws Exception {
         Tipo o;
         if (getEstaVazia())
-            throw new FilaVaziaException("Underflow da fila");
+            throw new Exception("Underflow da fila");
         o = F.get(inicio);
         F.set(inicio, null);      // libera memória
         inicio = (inicio + 1) % posicoes;   // calcula novo inicio da fila
@@ -47,7 +47,7 @@ public class FilaVetor<Tipo> implements IQueue<Tipo> {
     @Override
     public Tipo inicio() throws Exception{
         if (getEstaVazia())
-            throw new FilaVaziaException("Esvaziamento (underflow) da fila");
+            throw new Exception("Esvaziamento (underflow) da fila");
         Tipo o = F.get(inicio);     // devolve o objeto do início da fila
         return o; 				// sem retirá-lo da fila
     }
@@ -56,7 +56,7 @@ public class FilaVetor<Tipo> implements IQueue<Tipo> {
     public Tipo fim() throws Exception{
         Tipo o;
         if (getEstaVazia())
-            throw new FilaVaziaException("Underflow da fila");
+            throw new Exception("Underflow da fila");
         if (fim == 0)
             o = F.get(posicoes - 1);    // devolve o objeto do final da fila
         else          // sem retirá-lo da fila

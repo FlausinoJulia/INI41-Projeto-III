@@ -7,6 +7,7 @@ public class Cidade implements Comparable<Cidade>
     private String nome;
     private double x, y;
 
+
     public Cidade (String nome, double x, double y)
     {
         this.nome = nome;
@@ -49,7 +50,6 @@ public class Cidade implements Comparable<Cidade>
         return nome.compareTo(o.getNome());
     }
 
-    @NonNull
     @Override
     public String toString()
     {

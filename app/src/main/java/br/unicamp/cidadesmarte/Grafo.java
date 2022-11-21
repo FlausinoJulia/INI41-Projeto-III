@@ -20,7 +20,7 @@ public class Grafo
     // DataGridView dgv; // aqui seria algum componente da activity?
 
     // DIJKSTRA
-    DistOriginal[] percurso; // vetor que vai guarda os caminhos que vão sendo encontrados
+    DistOriginal[] percurso; // vetor que guarda os caminhos que vão sendo encontrados
     int infinito = Integer.MAX_VALUE;
     int verticeAtual;     // global que indica o vértice atualmente sendo visitado
     int doInicioAteAtual; // global usada para ajustar menor caminho com Djikstra
@@ -139,13 +139,28 @@ public class Grafo
             int currVertex = semSucessores();
             if (currVertex == -1)
                 return "Erro: grafo possui ciclos";
-            gPilha.empilhar(vertices[currVertex].getRotulo());
+            try
+            {
+                gPilha.empilhar(vertices[currVertex].getRotulo());
+            }
+            catch (Exception overflowPilha)
+            {
+                Log.wtf("ErroClasseGrafo", "Overflow da pilha na ordenação topológica");
+            }
+
 
             removerVertice(currVertex);
         }
+
         String resultado = "Sequencia da Ordenacao Topologica: ";
-        while(gPilha.size() > 0)
-            resultado += gPilha.pop() + " ";
+        while(gPilha.getTamanho() > 0)
+            try {
+                resultado += gPilha.desempilhar() + " ";
+            }
+            catch (Exception underflowPilha)
+            {
+                Log.wtf("ErroClasseGrafo", "Underflow da pilha na ordenação topológica");
+            }
 
         return resultado;
     }
@@ -271,7 +286,7 @@ public class Grafo
     }
 
     // DIJKSTRA
-    public String caminho (int inicioDoPercurso, int finalDoPercurso, List<String> lista)
+    public String caminho (int inicioDoPercurso, int finalDoPercurso)
     {
         for (int j = 0; j < numVerts; j++)
             vertices[j].setFoiVisitado(false);
@@ -286,16 +301,16 @@ public class Grafo
         for (int nTree = 0; nTree < numVerts; nTree++)
         {
             int indiceDoMenor = obterMenor();
-            int distanciaMinima = percurso[indiceDoMenor].distancia;
+            int distanciaMinima = percurso[indiceDoMenor].getDistancia();
 
             verticeAtual = indiceDoMenor;
-            doInicioAteAtual = percurso[indiceDoMenor].distancia;
+            doInicioAteAtual = percurso[indiceDoMenor].getDistancia();
 
             vertices[verticeAtual].setFoiVisitado(true);
-            ajustarMenorCaminho(lista);
+            ajustarMenorCaminho();
         }
 
-        return exibirPercursos(inicioDoPercurso, finalDoPercurso, lista);
+        return exibirPercursos(inicioDoPercurso, finalDoPercurso);
     }
 
     public int obterMenor()
@@ -304,9 +319,9 @@ public class Grafo
         int indiceDaMinima = 0;
         for (int j = 0; j < numVerts; j++)
         {
-            if (!(vertices[j].isFoiVisitado()) && (percurso[j].distancia < distanciaMinima))
+            if (!(vertices[j].isFoiVisitado()) && (percurso[j].getDistancia() < distanciaMinima))
             {
-                distanciaMinima = percurso[j].distancia;
+                distanciaMinima = percurso[j].getDistancia();
                 indiceDaMinima = j;
             }
         }
@@ -314,7 +329,7 @@ public class Grafo
         return indiceDaMinima;
     }
 
-    public void ajustarMenorCaminho(List<String> lista)
+    public void ajustarMenorCaminho()
     {
         for (int coluna = 0; coluna < numVerts; coluna++)
         {
@@ -322,64 +337,38 @@ public class Grafo
             {
                 int atualAteMargem = matriz[verticeAtual][coluna];
                 int doInicioAteMargem = doInicioAteAtual + atualAteMargem;
-                int distanciaDoCaminho = percurso[coluna].distancia;
+                int distanciaDoCaminho = percurso[coluna].getDistancia();
 
                 if (doInicioAteMargem < distanciaDoCaminho)
                 {
-                    percurso[coluna].verticePai = verticeAtual;
-                    percurso[coluna].distancia = doInicioAteMargem;
-                    exibirTabela(lista);
+                    percurso[coluna].setVerticePai(verticeAtual);
+                    percurso[coluna].setDistancia(doInicioAteMargem);
                 }
             }
         }
-
-        lista.add("====caminho ajustado====");
-        lista.add(" ");
     }
 
-    public void exibirTabela(List<String> lista)
-    {
-        String dist = "";
-        lista.add("Vértice\tVisitado?\tPeso\tVindo de");
-        for (int i = 0; i < numVerts; i++)
-        {
-            if (percurso[i].distancia == infinito)
-                dist = "inf";
-            else
-                dist = percurso[i].distancia + "";
-            lista.add(vertices[i].getRotulo() + "\t" + vertices[i].isFoiVisitado() +
-                    "\t\t" + dist + "\t" + vertices[percurso[i].verticePai].getRotulo());
-        }
-        lista.add("-----------------------------------------------------");
-    }
 
-    public String exibirPercursos(int inicioDoPercurso, int finalDoPercurso,
-                                  List<String> lista)
+    public String exibirPercursos(int inicioDoPercurso, int finalDoPercurso)
     {
         String resultado = "";
         for (int j = 0; j < numVerts; j++)
         {
             resultado += vertices[j].getRotulo() + "=";
-            if (percurso[j].distancia == infinito)
+            if (percurso[j].getDistancia() == infinito)
                 resultado += "inf";
             else
-                resultado += percurso[j].distancia+" ";
-            String pai = vertices[percurso[j].verticePai].getRotulo();
+                resultado += percurso[j].getDistancia()+" ";
+            String pai = vertices[percurso[j].getVerticePai()].getRotulo();
             resultado += "(" + pai + ") ";
         }
 
-        lista.add(resultado);
-        lista.add(" ");
-        lista.add(" ");
-        lista.add("Caminho entre " + vertices[inicioDoPercurso].getRotulo() +
-                " e " + vertices[finalDoPercurso].getRotulo());
-        lista.add(" ");
         int onde = finalDoPercurso;
         Stack<String> pilha = new Stack<String>();
         int cont = 0;
         while (onde != inicioDoPercurso)
         {
-            onde = percurso[onde].verticePai;
+            onde = percurso[onde].getVerticePai();
             pilha.push(vertices[onde].getRotulo());
             cont++;
         }
@@ -390,7 +379,7 @@ public class Grafo
             if (pilha.size() != 0)
                 resultado += " --> ";
         }
-        if ((cont == 1) && (percurso[finalDoPercurso].distancia == infinito))
+        if ((cont == 1) && (percurso[finalDoPercurso].getDistancia() == infinito))
             resultado = "Não há caminho";
         else
             resultado += " --> " + vertices[finalDoPercurso].getRotulo();
