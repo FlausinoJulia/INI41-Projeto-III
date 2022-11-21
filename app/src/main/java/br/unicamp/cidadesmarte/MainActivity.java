@@ -28,28 +28,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.cidades_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-
-        // lendo o arquivo de cidades
+        // lendo o arquivo de cidades //
         String jsonFileString = Utils.getJsonFromAssets(getApplicationContext(), "cidadesMarte.json");
-        Log.i("cidades", jsonFileString);
 
         Gson gson = new Gson(); // cria uma instanica da classe gson
-
         Type listaCidadesType = new TypeToken<List<Cidade>>() { }.getType();
+
         // converte um vetor de JSON para uma lista de objetos da classe Cidade
         cidades = gson.fromJson(jsonFileString, listaCidadesType);
 
-        // print cidades
-        for(int i = 0; i < cidades.size(); i++)
-            Log.i("cidades", "> item " + i + "\n" + cidades.get(i));
+        // spinners para o usuário selecionar a cidade de origem e destino desejadas
+        Spinner spinnerOrigem  = (Spinner) findViewById(R.id.spinner);
+        Spinner spinnerDestino = (Spinner) findViewById(R.id.spinner2);
+
+        // array adapter das cidades de origem para o spinner origem
+        ArrayAdapter<Cidade> adapter = new ArrayAdapter<Cidade>(this, android.R.layout.simple_spinner_item, cidades);
+        // especificando o layout da lista que aparece quando clicamos no spinner
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // aplicando o adapter para o spinner
+        spinnerOrigem.setAdapter(adapter);
+
+        // array adapter das cidades de destino para o spinner destino
+        ArrayAdapter<Cidade> adapter2 = new ArrayAdapter<Cidade>(this, android.R.layout.simple_spinner_item, cidades);
+        // especificando o layout da lista que aparece quando clicamos no spinner
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // aplicando o adapter de cidades de desitno para o spinner destino
+        spinnerDestino.setAdapter(adapter2);
 
     }
 }

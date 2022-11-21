@@ -1,58 +1,56 @@
 package br.unicamp.cidadesmarte;
 
-import androidx.annotation.NonNull;
-
 public class Cidade implements Comparable<Cidade>
 {
-    private String nome;
-    private double x, y;
+    private String nomeCidade;
+    private double coordenadaX, coordenadaY;
 
 
     public Cidade (String nome, double x, double y)
     {
-        this.nome = nome;
-        this.x = x;
-        this.y = y;
+        this.nomeCidade = nome;
+        this.coordenadaX = x;
+        this.coordenadaY = y;
     }
 
     public String getNome()
     {
-        return this.nome;
+        return this.nomeCidade;
     }
 
     public void setNome(String nome)
     {
-        this.nome = nome;
+        this.nomeCidade = nome;
     }
 
     public double getX()
     {
-        return this.x;
+        return this.coordenadaX;
     }
 
     public void setX(double x)
     {
-        this.x = x;
+        this.coordenadaX = x;
     }
 
     public double getY()
     {
-        return this.y;
+        return this.coordenadaY;
     }
 
     public void setY(double y)
     {
-        this.y = y;
+        this.coordenadaY = y;
     }
 
     @Override
     public int compareTo(Cidade o) {
-        return nome.compareTo(o.getNome());
+        return nomeCidade.compareTo(o.getNome());
     }
 
     @Override
     public String toString()
     {
-        return this.nome;
+        return this.nomeCidade;
     }
 }

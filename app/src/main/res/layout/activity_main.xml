@@ -78,7 +78,7 @@
         app:layout_constraintVertical_bias="0.054" />
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/cbRecursao"
         android:layout_width="119dp"
         android:layout_height="41dp"
         android:text="Recursão"
@@ -92,7 +92,7 @@
         app:layout_constraintVertical_bias="0.297" />
 
     <CheckBox
-        android:id="@+id/checkBox2"
+        android:id="@+id/cbDijkstra"
         android:layout_width="119dp"
         android:layout_height="41dp"
         android:gravity="center"
@@ -103,7 +103,7 @@
         app:layout_constraintHorizontal_bias="0.026"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.408" />
+        app:layout_constraintVertical_bias="0.429" />
 
     <Button
         android:layout_width="wrap_content"
