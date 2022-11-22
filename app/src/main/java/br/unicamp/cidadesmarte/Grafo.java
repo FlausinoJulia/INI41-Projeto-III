@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
@@ -29,7 +30,6 @@ public class Grafo
     public Grafo()
     {
         // this.dgv = dgv; // dgv seria passado como parametro
-
         vertices = new Vertice[NUM_VERTICES];
         matriz = new int[NUM_VERTICES][NUM_VERTICES];
         numVerts = 0;
@@ -153,6 +153,7 @@ public class Grafo
         }
 
         String resultado = "Sequencia da Ordenacao Topologica: ";
+
         while(gPilha.getTamanho() > 0)
             try {
                 resultado += gPilha.desempilhar() + " ";
@@ -228,14 +229,13 @@ public class Grafo
     }
 
     // PERCURSO EM LARGURA //
-
     public void percursoPorLargura(TextView tv)
     {
         tv.setText("");
         Queue<Integer> gQueue = null;
         vertices[0].setFoiVisitado(true);
         exibirVertice(0, tv);
-        gQueue.add(0);
+        gQueue.add(0); // vai adicionar no null?
         int vert1, vert2;
         while (gQueue.size() > 0 )
         {
@@ -252,7 +252,6 @@ public class Grafo
         for (int i = 0; i < numVerts; i++)
             vertices[i].setFoiVisitado(false);
     }
-
 
     // ARVORE GERADORA MINIMA //
     public void arvoreGeradoraMinima(int primeiro, TextView tv)
@@ -385,5 +384,33 @@ public class Grafo
             resultado += " --> " + vertices[finalDoPercurso].getRotulo();
 
         return resultado;
+    }
+
+    public String acharCaminhoRec (int atual, int destino)
+    {
+        String caminho;
+
+        // se a cidade atual for a cidade de destino, achamos um caminho
+        if (atual == destino)
+        {
+            return vertices[atual].getRotulo();
+        }
+
+    }
+
+    public List<String> acharTodosOsCaminhosRec(int origem, int destino)
+    {
+        List<String> caminhos = new ArrayList<String>();
+
+
+
+        acharCaminhoRec(origem, destino);
+        // terminaram todas as saidas?
+        // nao tem saida? - esse nao sei se presta, se não tem saida, vou pro proximo
+        // se ja foi visitado, proixmo
+        // achei um caminho?
+
+
+        return caminhos;
     }
 }
