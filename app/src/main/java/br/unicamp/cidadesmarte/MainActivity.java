@@ -2,21 +2,20 @@ package br.unicamp.cidadesmarte;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import java.io.Reader;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends AppCompatActivity {
@@ -55,5 +54,21 @@ public class MainActivity extends AppCompatActivity {
         // aplicando o adapter de cidades de desitno para o spinner destino
         spinnerDestino.setAdapter(adapter2);
 
+
     }
+
+    public void desenharNoMapa(){
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mapa);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.BLUE);
+
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawCircle(60, 50, 25, paint);
+
+        ImageView imageView = (ImageView)findViewById(R.id.imgMapa);
+        imageView.setAdjustViewBounds(true);
+        imageView.setImageBitmap(bitmap);
+    }
+
 }

@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvOrigem"
         android:layout_width="37dp"
         android:layout_height="29dp"
         android:gravity="center"
@@ -66,19 +66,20 @@
         app:layout_constraintVertical_bias="0.147" />
 
     <ImageView
-        android:layout_width="423dp"
-        android:layout_height="247dp"
+        android:id="@+id/imgMapa"
+        android:layout_width="435dp"
+        android:layout_height="257dp"
+        android:layout_gravity="center"
         android:src="@drawable/mapa"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintHorizontal_bias="0.966"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_gravity="center"
-        app:layout_constraintVertical_bias="0.054" />
+        app:layout_constraintVertical_bias="0.0" />
 
-    <CheckBox
-        android:id="@+id/cbRecursao"
+    <RadioButton
+        android:id="@+id/rbRecursao"
         android:layout_width="119dp"
         android:layout_height="41dp"
         android:text="Recursão"
@@ -91,8 +92,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.297" />
 
-    <CheckBox
-        android:id="@+id/cbDijkstra"
+    <RadioButton
+        android:id="@+id/rbDijkstra"
         android:layout_width="119dp"
         android:layout_height="41dp"
         android:gravity="center"
@@ -118,7 +119,8 @@
         app:layout_constraintVertical_bias="0.352"
         android:text="Buscar"/>
 
-    <GridView
+    <ListView
+        android:id="@+id/lvCaminhos"
         android:layout_width="266dp"
         android:layout_height="197dp"
         app:layout_constraintBottom_toBottomOf="parent"
