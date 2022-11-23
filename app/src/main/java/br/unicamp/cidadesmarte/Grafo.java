@@ -386,31 +386,47 @@ public class Grafo
         return resultado;
     }
 
+    public boolean verificouTodosOsVertices()
+    {
+        for (Vertice vertice : vertices) {
+            if (!vertice.isFoiVisitado())
+                return false;
+        }
+
+        return true;
+    }
+
+
     public String acharCaminhoRec (int atual, int destino)
     {
-        String caminho;
-
         // se a cidade atual for a cidade de destino, achamos um caminho
-        if (atual == destino)
+        if (atual == destino && verificouTodosOsVertices())
         {
             return vertices[atual].getRotulo();
         }
 
+
     }
 
-    public List<String> acharTodosOsCaminhosRec(int origem, int destino)
+    public void acharTodosOsCaminhosRec(int origem, int destino, List<String> caminhos)
     {
-        List<String> caminhos = new ArrayList<String>();
+        // setamos a origem como visitada
+        vertices[origem].setFoiVisitado(true);
 
+        if (origem == destino)
+        {
 
-
-        acharCaminhoRec(origem, destino);
+        }
+        for (int i = 0; i < vertices.length; i++)
+        {
+            if (!vertices[i].isFoiVisitado())
+                acharTodosOsCaminhosRec(i, destino, caminhos);
+        }
         // terminaram todas as saidas?
         // nao tem saida? - esse nao sei se presta, se não tem saida, vou pro proximo
         // se ja foi visitado, proixmo
         // achei um caminho?
 
 
-        return caminhos;
     }
 }
