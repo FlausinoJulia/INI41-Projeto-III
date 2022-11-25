@@ -55,6 +55,42 @@ public class MainActivity extends AppCompatActivity {
         spinnerDestino.setAdapter(adapter2);
 
         desenharNoMapa();
+
+
+        Grafo grafo = new Grafo();
+        /*
+
+        for (Cidade cidade : cidades)
+        {
+            grafo.novoVertice(cidade.getNome());
+        }*/
+
+        grafo.novoVertice("A");
+        grafo.novoVertice("B");
+        grafo.novoVertice("C");
+        grafo.novoVertice("D");
+        grafo.novoVertice("E");
+
+        grafo.novaAresta(0, 1); // A e B
+        grafo.novaAresta(0, 2); // A e C
+        grafo.novaAresta(0, 4); // A e E
+
+        grafo.novaAresta(1, 2); // B e C
+        grafo.novaAresta(1, 4); // B e E
+
+        grafo.novaAresta(2, 0); // C e A
+        grafo.novaAresta(2, 1); // C e B
+        grafo.novaAresta(2, 3); // C e D
+
+        grafo.novaAresta(3, 0); // D e A
+        grafo.novaAresta(3, 1); // D e B
+        grafo.novaAresta(3, 2); // D e C
+        grafo.novaAresta(3, 4); // D e E
+
+        grafo.novaAresta(4, 1); // E e B
+
+        List<String> todosCaminhos;
+        todosCaminhos = grafo.acharTodosOsCaminhosRec(0, 1);
     }
 
     public void desenharNoMapa(){

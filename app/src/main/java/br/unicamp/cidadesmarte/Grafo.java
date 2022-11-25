@@ -186,8 +186,7 @@ public class Grafo
         Stack<Integer> gPilha = new Stack<Integer>();
 
         // limpando o "foi visitado" de todos os vertices
-        for (int i = 0; i <= numVerts - 1; i++)
-            vertices[i].setFoiVisitado(false);
+        limparFoiVisitado();
 
         vertices[0].setFoiVisitado(true);
         exibirVertice(0, tv);
@@ -397,36 +396,49 @@ public class Grafo
     }
 
 
-    public String acharCaminhoRec (int atual, int destino)
+    public List<String> acharTodosOsCaminhosRec (int origem, int destino)
     {
-        // se a cidade atual for a cidade de destino, achamos um caminho
-        if (atual == destino && verificouTodosOsVertices())
-        {
-            return vertices[atual].getRotulo();
-        }
+        List<String> caminhos = new ArrayList<String>();
+        String caminho = "";
 
+        limparFoiVisitado();
 
+        acharTodosOsCaminhosRec(origem, destino, caminhos, caminho);
+
+        return caminhos;
     }
 
-    public void acharTodosOsCaminhosRec(int origem, int destino, List<String> caminhos)
+    private void acharTodosOsCaminhosRec(int atual, int destino, List<String> caminhos, String caminho)
     {
-        // setamos a origem como visitada
-        vertices[origem].setFoiVisitado(true);
+        // setamos o vertice atual como visitado
+        vertices[atual].setFoiVisitado(true);
+        caminho += vertices[atual].getRotulo() + " ";
 
-        if (origem == destino)
+        if (atual == destino)
         {
-
+            caminhos.add(caminho); // adicionamos o caminho encontrado na lista de caminho
+            caminho =  "";
         }
-        for (int i = 0; i < vertices.length; i++)
+        else
         {
-            if (!vertices[i].isFoiVisitado())
-                acharTodosOsCaminhosRec(i, destino, caminhos);
+            // percorro cada vértice partindo do vértice atual
+            for (int i = 0; i < numVerts; i++)
+            {
+                // se encontro um vértice que ainda não foi visitado e que tem caminho
+                if (!vertices[i].isFoiVisitado() && matriz[atual][i] != infinito)
+                {
+                    // vou para o vértice ainda não visitado
+                    acharTodosOsCaminhosRec(i, destino, caminhos, caminho);
+                    // depois que já vi todos os caminhos possíveis nessa saída, marco ela como não visitada
+                    vertices[i].setFoiVisitado(false);
+                }
+            }
         }
-        // terminaram todas as saidas?
-        // nao tem saida? - esse nao sei se presta, se não tem saida, vou pro proximo
-        // se ja foi visitado, proixmo
-        // achei um caminho?
+    }
 
-
+    private void limparFoiVisitado()
+    {
+        for (int j = 0; j < numVerts; j++)
+            vertices[j].setFoiVisitado(false);
     }
 }
