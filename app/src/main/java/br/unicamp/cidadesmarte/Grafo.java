@@ -279,15 +279,13 @@ public class Grafo
             }
         }
 
-        for (int i = 0; i <= numVerts - 1; i++)
-            vertices[i].setFoiVisitado(false);
+        limparFoiVisitado();
     }
 
     // DIJKSTRA
     public String caminho (int inicioDoPercurso, int finalDoPercurso)
     {
-        for (int j = 0; j < numVerts; j++)
-            vertices[j].setFoiVisitado(false);
+        limparFoiVisitado();
 
         vertices[inicioDoPercurso].setFoiVisitado(true);
         for (int j = 0; j < numVerts; j++)
@@ -396,8 +394,11 @@ public class Grafo
     }
 
 
-    public List<String> acharTodosOsCaminhosRec (int origem, int destino)
+    public List<String> acharTodosOsCaminhosRec (int origem, int destino) throws Exception
     {
+        if (destino >= numVerts || destino < 0 || origem >= numVerts || origem < 0)
+            throw new Exception("Esse vértice não existe no grafo");
+
         List<String> caminhos = new ArrayList<String>();
         String caminho = "";
 

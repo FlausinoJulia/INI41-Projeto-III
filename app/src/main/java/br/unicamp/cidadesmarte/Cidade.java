@@ -13,6 +13,13 @@ public class Cidade implements Comparable<Cidade>
         this.coordenadaY = y;
     }
 
+    public Cidade (String nome)
+    {
+        this.nomeCidade = nome;
+        this.coordenadaX = 0;
+        this.coordenadaY = 0;
+    }
+
     public String getNome()
     {
         return this.nomeCidade;

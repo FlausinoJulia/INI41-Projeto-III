@@ -21,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 public class MainActivity extends AppCompatActivity {
 
     List<Cidade> cidades;
+    List<Caminho> caminhos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +57,32 @@ public class MainActivity extends AppCompatActivity {
 
         desenharNoMapa();
 
+        // lendo o arquivo de caminhos //
+        String jsonFileString2 = Utils.getJsonFromAssets(getApplicationContext(), "caminhosEntreCidadesMarte.json");
+
+        Type listaCaminhosType = new TypeToken<List<Caminho>>() { }.getType();
+
+        // converte um vetor de JSON para uma lista de objetos da classe Cidade
+        caminhos = gson.fromJson(jsonFileString2, listaCaminhosType);
 
         Grafo grafo = new Grafo();
-        /*
-
         for (Cidade cidade : cidades)
         {
             grafo.novoVertice(cidade.getNome());
-        }*/
+        }
 
+        for (Caminho caminho : caminhos)
+        {
+            caminho.getCidadeDeOrigem();
+
+            Cidade origem = new Cidade(caminho.getCidadeDeOrigem());
+            Cidade destino = new Cidade(caminho.getCidadeDeDestino());
+
+            grafo.novaAresta(cidades.indexOf(origem), cidades.indexOf(destino));
+        }
+
+        // teste 1 - funcionou //
+        /*
         grafo.novoVertice("A");
         grafo.novoVertice("B");
         grafo.novoVertice("C");
@@ -91,6 +109,76 @@ public class MainActivity extends AppCompatActivity {
 
         List<String> todosCaminhos;
         todosCaminhos = grafo.acharTodosOsCaminhosRec(0, 1);
+         */
+
+        // teste 2 - funcionou //
+        /*
+        grafo.novoVertice("1");
+        grafo.novoVertice("2");
+        grafo.novoVertice("3");
+
+        grafo.novaAresta(0,1);  // 1 e 2
+        grafo.novaAresta(0, 2); // 1 e 3
+
+        grafo.novaAresta(1, 0); // 2 e 1
+        grafo.novaAresta(1, 2); // 2 e 3
+
+        List<String> todosCaminhos;
+        todosCaminhos = grafo.acharTodosOsCaminhosRec(0, 2);
+        */
+
+        // teste 3 - funcionou //
+        /*
+        grafo.novoVertice("A");
+        grafo.novoVertice("B");
+        grafo.novoVertice("C");
+        grafo.novoVertice("D");
+        grafo.novoVertice("E");
+
+        grafo.novaAresta(0,1);
+        grafo.novaAresta(0,2);
+        grafo.novaAresta(0,4);
+
+        grafo.novaAresta(1,0);
+        grafo.novaAresta(1,2);
+        grafo.novaAresta(1,3);
+        grafo.novaAresta(1,4);
+
+        grafo.novaAresta(2,0);
+        grafo.novaAresta(2,1);
+        grafo.novaAresta(2,4);
+
+        grafo.novaAresta(3,1);
+        grafo.novaAresta(3,2);
+        grafo.novaAresta(3,4);
+
+        grafo.novaAresta(4,0);
+        grafo.novaAresta(4,2);
+
+        List<String> todosCaminhos;
+        todosCaminhos = grafo.acharTodosOsCaminhosRec(0, 3);
+         */
+
+        // teste 4 //
+        /*
+        grafo.novoVertice("Um");
+        grafo.novoVertice("Dois");
+        grafo.novoVertice("Três");
+
+        List<String> todosCaminhos;
+        try
+        {
+            todosCaminhos = grafo.acharTodosOsCaminhosRec(0, 7);
+        }
+        catch (Exception e)
+        {}
+
+         */
+
+
+
+
+
     }
 
     public void desenharNoMapa(){
