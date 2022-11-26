@@ -14,7 +14,7 @@ import java.util.Stack;
 
 public class Grafo
 {
-    private final int NUM_VERTICES = 20;
+    private final int NUM_VERTICES = 100;
     private Vertice[] vertices;
     private int[][] matriz;
     int numVerts;

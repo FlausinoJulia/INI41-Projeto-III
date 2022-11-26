@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -65,21 +66,49 @@ public class MainActivity extends AppCompatActivity {
         // converte um vetor de JSON para uma lista de objetos da classe Cidade
         caminhos = gson.fromJson(jsonFileString2, listaCaminhosType);
 
+        // instanciando um grafo
         Grafo grafo = new Grafo();
+
+        // cada cidade vai ser um vértice do grafo
         for (Cidade cidade : cidades)
         {
             grafo.novoVertice(cidade.getNome());
         }
 
+        // criando arestas no grafo para representar cada ligação entre cidades
         for (Caminho caminho : caminhos)
         {
-            caminho.getCidadeDeOrigem();
+            int indiceOrigem = 0, indiceDestino = 0;
 
-            Cidade origem = new Cidade(caminho.getCidadeDeOrigem());
-            Cidade destino = new Cidade(caminho.getCidadeDeDestino());
+            for (int i = 0; i < cidades.size(); i++) {
+                if (cidades.get(i).getNome().equals(caminho.getCidadeDeOrigem()))
+                {
+                    indiceOrigem = i;
+                    break;
+                }
 
-            grafo.novaAresta(cidades.indexOf(origem), cidades.indexOf(destino));
+            }
+
+            for (int i = 0; i < cidades.size(); i++) {
+                if (cidades.get(i).getNome().equals(caminho.getCidadeDeDestino()))
+                {
+                    indiceDestino = i;
+                    break;
+                }
+            }
+
+            grafo.novaAresta(indiceOrigem, indiceDestino);
         }
+
+        List<String> todosCaminhos;
+        try {
+            todosCaminhos = grafo.acharTodosOsCaminhosRec(0, 1);
+        }
+        catch (Exception e )
+        {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
 
         // teste 1 - funcionou //
         /*
@@ -174,10 +203,6 @@ public class MainActivity extends AppCompatActivity {
         {}
 
          */
-
-
-
-
 
     }
 
