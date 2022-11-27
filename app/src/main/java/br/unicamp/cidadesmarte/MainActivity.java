@@ -21,13 +21,21 @@ import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends AppCompatActivity {
 
-    List<Cidade> cidades;
-    List<Caminho> caminhos;
+    private List<Cidade> cidades;
+    private List<Caminho> caminhos;
+    private final String[] CRITERIOS = {"Distância", "Tempo", "Custo"};
+    private String criterioDeComparacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // preenchendo o spinner de critérios //
+        Spinner spinnerCriterios  = (Spinner) findViewById(R.id.spinnerCriterios);
+        ArrayAdapter<String> adapterSpinnerCriterios = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, CRITERIOS);
+        adapterSpinnerCriterios.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCriterios.setAdapter(adapterSpinnerCriterios);
 
         // lendo o arquivo de cidades //
         String jsonFileString = Utils.getJsonFromAssets(getApplicationContext(), "cidadesMarte.json");
@@ -78,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         // criando arestas no grafo para representar cada ligação entre cidades
         for (Caminho caminho : caminhos)
         {
-            int indiceOrigem = 0, indiceDestino = 0;
+            int indiceOrigem = -1, indiceDestino = -1;
 
             for (int i = 0; i < cidades.size(); i++) {
                 if (cidades.get(i).getNome().equals(caminho.getCidadeDeOrigem()))
@@ -97,112 +105,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            grafo.novaAresta(indiceOrigem, indiceDestino);
-        }
+            if (indiceOrigem != -1 && indiceDestino != -1)
+                grafo.novaAresta(indiceOrigem, indiceDestino);
 
-        List<String> todosCaminhos;
-        try {
-            todosCaminhos = grafo.acharTodosOsCaminhosRec(0, 1);
-        }
-        catch (Exception e )
-        {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
 
-        // teste 1 - funcionou //
-        /*
-        grafo.novoVertice("A");
-        grafo.novoVertice("B");
-        grafo.novoVertice("C");
-        grafo.novoVertice("D");
-        grafo.novoVertice("E");
 
-        grafo.novaAresta(0, 1); // A e B
-        grafo.novaAresta(0, 2); // A e C
-        grafo.novaAresta(0, 4); // A e E
 
-        grafo.novaAresta(1, 2); // B e C
-        grafo.novaAresta(1, 4); // B e E
 
-        grafo.novaAresta(2, 0); // C e A
-        grafo.novaAresta(2, 1); // C e B
-        grafo.novaAresta(2, 3); // C e D
-
-        grafo.novaAresta(3, 0); // D e A
-        grafo.novaAresta(3, 1); // D e B
-        grafo.novaAresta(3, 2); // D e C
-        grafo.novaAresta(3, 4); // D e E
-
-        grafo.novaAresta(4, 1); // E e B
-
-        List<String> todosCaminhos;
-        todosCaminhos = grafo.acharTodosOsCaminhosRec(0, 1);
-         */
-
-        // teste 2 - funcionou //
-        /*
-        grafo.novoVertice("1");
-        grafo.novoVertice("2");
-        grafo.novoVertice("3");
-
-        grafo.novaAresta(0,1);  // 1 e 2
-        grafo.novaAresta(0, 2); // 1 e 3
-
-        grafo.novaAresta(1, 0); // 2 e 1
-        grafo.novaAresta(1, 2); // 2 e 3
-
-        List<String> todosCaminhos;
-        todosCaminhos = grafo.acharTodosOsCaminhosRec(0, 2);
-        */
-
-        // teste 3 - funcionou //
-        /*
-        grafo.novoVertice("A");
-        grafo.novoVertice("B");
-        grafo.novoVertice("C");
-        grafo.novoVertice("D");
-        grafo.novoVertice("E");
-
-        grafo.novaAresta(0,1);
-        grafo.novaAresta(0,2);
-        grafo.novaAresta(0,4);
-
-        grafo.novaAresta(1,0);
-        grafo.novaAresta(1,2);
-        grafo.novaAresta(1,3);
-        grafo.novaAresta(1,4);
-
-        grafo.novaAresta(2,0);
-        grafo.novaAresta(2,1);
-        grafo.novaAresta(2,4);
-
-        grafo.novaAresta(3,1);
-        grafo.novaAresta(3,2);
-        grafo.novaAresta(3,4);
-
-        grafo.novaAresta(4,0);
-        grafo.novaAresta(4,2);
-
-        List<String> todosCaminhos;
-        todosCaminhos = grafo.acharTodosOsCaminhosRec(0, 3);
-         */
-
-        // teste 4 //
-        /*
-        grafo.novoVertice("Um");
-        grafo.novoVertice("Dois");
-        grafo.novoVertice("Três");
-
-        List<String> todosCaminhos;
-        try
-        {
-            todosCaminhos = grafo.acharTodosOsCaminhosRec(0, 7);
-        }
-        catch (Exception e)
-        {}
-
-         */
 
     }
 
