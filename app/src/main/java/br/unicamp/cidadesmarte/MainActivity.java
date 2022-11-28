@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Type;
@@ -104,6 +105,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+        Button btnDijkstra = findViewById(R.id.btnDijkstra);
+        btnDijkstra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickDijkstra();
+            }
+        });
+
         Toast.makeText(this, "Selecione as cidades de origem de destino e o critério de comparação de caminhos.", Toast.LENGTH_LONG).show();
     }
 
@@ -170,6 +179,67 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
             catch (Exception erro)
             {} // já verificamos no if
+
+    }
+
+    public void onClickDijkstra()
+    {
+        // criando arestas no grafo para representar cada ligação entre cidades
+        for (Caminho caminho : caminhos)
+        {
+            int indiceOrigem = -1, indiceDestino = -1;
+
+            for (int i = 0; i < cidades.size(); i++) {
+                if (cidades.get(i).getNome().equals(caminho.getCidadeDeOrigem()))
+                {
+                    indiceOrigem = i;
+                    break;
+                }
+
+            }
+
+            for (int i = 0; i < cidades.size(); i++) {
+                if (cidades.get(i).getNome().equals(caminho.getCidadeDeDestino()))
+                {
+                    indiceDestino = i;
+                    break;
+                }
+            }
+
+            if (indiceOrigem != -1 && indiceDestino != -1)
+            {
+                switch (criterioDeComparacao)
+                {
+                    case "Distância":
+                        oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getDistancia());
+                        break;
+                    case "Tempo":
+                        oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getTempo());
+                        break;
+                    case "Custo":
+                        oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getCusto());
+                }
+
+            }
+        }
+
+        int indiceCidadeOrigem = -1, indiceCidadeDestino = -1;
+
+        for (int i = 0; i < cidades.size(); i++)
+            if (cidades.get(i).getNome().equals(cidadeDeOrigem))
+                indiceCidadeOrigem = i;
+
+        for (int i = 0; i < cidades.size(); i++)
+            if (cidades.get(i).getNome().equals(cidadeDeDestino))
+                indiceCidadeDestino = i;
+
+        String menorCaminho = "";
+
+        if (indiceCidadeOrigem != -1 && indiceCidadeDestino != -1)
+            menorCaminho = oGrafo.caminho(indiceCidadeOrigem, indiceCidadeDestino);
+
+        TextView tvMenorCaminho = findViewById(R.id.tvMenorCaminho);
+        tvMenorCaminho.setText(menorCaminho);
     }
 
     public void desenharNoMapa(){
