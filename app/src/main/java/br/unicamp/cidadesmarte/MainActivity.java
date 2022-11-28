@@ -8,8 +8,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -19,23 +23,31 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private List<Cidade> cidades;
     private List<Caminho> caminhos;
     private final String[] CRITERIOS = {"Distância", "Tempo", "Custo"};
-    private String criterioDeComparacao;
+    private String criterioDeComparacao = "Distância";
+    private String cidadeDeOrigem, cidadeDeDestino;
+    private Grafo oGrafo;
+    private Spinner spinnerCriterios, spinnerOrigem, spinnerDestino;
+    private ListView lvCaminhos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // associando lvCaminhos com o list view do layout
+        lvCaminhos = (ListView) findViewById(R.id.lvCaminhos);
+
         // preenchendo o spinner de critérios //
-        Spinner spinnerCriterios  = (Spinner) findViewById(R.id.spinnerCriterios);
+        spinnerCriterios  = (Spinner) findViewById(R.id.spinnerCriterios);
         ArrayAdapter<String> adapterSpinnerCriterios = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, CRITERIOS);
         adapterSpinnerCriterios.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCriterios.setAdapter(adapterSpinnerCriterios);
+        spinnerCriterios.setOnItemSelectedListener(this);
 
         // lendo o arquivo de cidades //
         String jsonFileString = Utils.getJsonFromAssets(getApplicationContext(), "cidadesMarte.json");
@@ -47,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
         cidades = gson.fromJson(jsonFileString, listaCidadesType);
 
         // spinners para o usuário selecionar a cidade de origem e destino desejadas
-        Spinner spinnerOrigem  = (Spinner) findViewById(R.id.spinner);
-        Spinner spinnerDestino = (Spinner) findViewById(R.id.spinner2);
+        spinnerOrigem  = (Spinner) findViewById(R.id.spinner);
+        spinnerDestino = (Spinner) findViewById(R.id.spinner2);
 
         // array adapter das cidades de origem para o spinner origem
         ArrayAdapter<Cidade> adapter = new ArrayAdapter<Cidade>(this, android.R.layout.simple_spinner_item, cidades);
@@ -75,14 +87,28 @@ public class MainActivity extends AppCompatActivity {
         caminhos = gson.fromJson(jsonFileString2, listaCaminhosType);
 
         // instanciando um grafo
-        Grafo grafo = new Grafo();
+        oGrafo = new Grafo();
 
+        // preenchendo o grafo //
         // cada cidade vai ser um vértice do grafo
         for (Cidade cidade : cidades)
         {
-            grafo.novoVertice(cidade.getNome());
+            oGrafo.novoVertice(cidade.getNome());
         }
 
+        Button btnBacktracking = findViewById(R.id.btnRecursao);
+        btnBacktracking.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickBacktracking();
+            }
+        });
+
+        Toast.makeText(this, "Selecione as cidades de origem de destino e o critério de comparação de caminhos.", Toast.LENGTH_LONG).show();
+    }
+
+    public void onClickBacktracking()
+    {
         // criando arestas no grafo para representar cada ligação entre cidades
         for (Caminho caminho : caminhos)
         {
@@ -106,15 +132,44 @@ public class MainActivity extends AppCompatActivity {
             }
 
             if (indiceOrigem != -1 && indiceDestino != -1)
-                grafo.novaAresta(indiceOrigem, indiceDestino);
+            {
+                switch (criterioDeComparacao)
+                {
+                    case "Distância":
+                        oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getDistancia());
+                        break;
+                    case "Tempo":
+                        oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getTempo());
+                        break;
+                    case "Custo":
+                        oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getCusto());
+                }
 
+            }
         }
 
+        cidadeDeOrigem = spinnerOrigem.getSelectedItem().toString();
+        cidadeDeDestino = spinnerDestino.getSelectedItem().toString();
 
+        List<String> todosOsCaminhos = null;
+        int indiceCidadeOrigem = -1, indiceCidadeDestino = -1;
 
+        for (int i = 0; i < cidades.size(); i++)
+            if (cidades.get(i).getNome().equals(cidadeDeOrigem))
+                indiceCidadeOrigem = i;
 
+        for (int i = 0; i < cidades.size(); i++)
+            if (cidades.get(i).getNome().equals(cidadeDeDestino))
+                indiceCidadeDestino = i;
 
-
+        if (indiceCidadeOrigem != -1 && indiceCidadeDestino != -1)
+            try {
+                todosOsCaminhos = oGrafo.acharTodosOsCaminhosRec(indiceCidadeOrigem, indiceCidadeDestino);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, todosOsCaminhos);
+                lvCaminhos.setAdapter(adapter);
+            }
+            catch (Exception erro)
+            {} // já verificamos no if
     }
 
     public void desenharNoMapa(){
@@ -140,4 +195,26 @@ public class MainActivity extends AppCompatActivity {
         imageView.setImageBitmap(mutableBitmap);
     }
 
+    // on item selected dos spinners //
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        String texto = parent.getItemAtPosition(pos).toString();
+
+        switch (parent.getId())
+        {
+            case R.id.spinnerCriterios:
+                criterioDeComparacao = texto;
+                break;
+            case R.id.spinner:  // spinner de origem
+                cidadeDeOrigem = texto;
+                break;
+            case R.id.spinner2: // spinner de destino
+                cidadeDeDestino = texto;
+                break;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+    }
 }

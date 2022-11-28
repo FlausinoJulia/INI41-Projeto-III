@@ -413,7 +413,13 @@ public class Grafo
     {
         // setamos o vertice atual como visitado
         vertices[atual].setFoiVisitado(true);
-        caminho += vertices[atual].getRotulo() + " ";
+        if (caminho.equals(""))
+        {
+            caminho += vertices[atual].getRotulo();
+        }
+        else
+            caminho += " --> " + vertices[atual].getRotulo();
+
 
         if (atual == destino)
         {

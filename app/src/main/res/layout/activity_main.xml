@@ -134,40 +134,37 @@
     <ListView
         android:id="@+id/lvCaminhos"
         android:layout_width="278dp"
-        android:layout_height="197dp"
+        android:layout_height="145dp"
+        android:maxHeight="145dp"
         android:layout_gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.035"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <RadioButton
-        android:id="@+id/rbRecursao"
+    <Button
+        android:id="@+id/btnRecursao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Recursão"
-        android:textSize="18dp"
+        android:text="Backtracking"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.026"
+        app:layout_constraintHorizontal_bias="0.027"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.429" />
+        app:layout_constraintVertical_bias="0.443" />
 
-    <RadioButton
-        android:id="@+id/rbDijkstra"
+    <Button
+        android:id="@+id/btnDijkstra"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Dijkstra"
-        android:textSize="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.316"
+        app:layout_constraintHorizontal_bias="0.299"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.429" />
+        app:layout_constraintVertical_bias="0.443" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
