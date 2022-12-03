@@ -68,26 +68,7 @@
         app:layout_constraintVertical_bias="0.283" />
 
 
-    <LinearLayout
-        android:layout_width="420dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="304dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgMapa"
-        app:layout_constraintVertical_bias="0.2">
 
-        <TextView
-            android:id="@+id/tvMenorCaminho"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text=""
-            android:visibility="invisible"
-            android:textColor="#CF0000"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </LinearLayout>
 
     <Spinner
         android:id="@+id/spinner2"
@@ -116,20 +97,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.293" />
-
-    <ImageView
-        android:id="@+id/imgMapa"
-        android:layout_width="420dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center"
-        android:scaleType="fitXY"
-        android:src="@drawable/mapa"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.977"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.126" />
 
     <ListView
         android:id="@+id/lvCaminhos"
@@ -165,6 +132,41 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.443" />
+
+    <LinearLayout
+        android:layout_width="435dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imgMapa"
+            android:layout_width="420dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/mapa" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/tvMenorCaminho"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text=""
+                android:layout_marginTop="2dp"
+                android:textColor="#0015CF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

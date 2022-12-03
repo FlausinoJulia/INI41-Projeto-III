@@ -2,7 +2,7 @@ package br.unicamp.cidadesmarte;
 
 public class DistOriginal // distancia desde o original
 {
-    public int distancia;
+    public long distancia;
     public int verticePai;
 
     public DistOriginal(int vp, int d)
@@ -11,12 +11,12 @@ public class DistOriginal // distancia desde o original
         verticePai = vp;
     }
 
-    public int getDistancia()
+    public long getDistancia()
     {
         return distancia;
     }
 
-    public void setDistancia (int distancia)
+    public void setDistancia (long distancia)
     {
         this.distancia = distancia;
     }

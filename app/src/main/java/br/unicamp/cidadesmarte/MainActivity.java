@@ -173,15 +173,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onClickDijkstra()
     {
+        cidadeDeOrigem = spinnerOrigem.getSelectedItem().toString();
+        cidadeDeDestino = spinnerDestino.getSelectedItem().toString();
+
         int indiceCidadeOrigem = -1, indiceCidadeDestino = -1;
 
         for (int i = 0; i < cidades.size(); i++)
-            if (cidades.get(i).getNome().equals(cidadeDeOrigem))
+            if (cidades.get(i).getNome().equals(cidadeDeOrigem)) {
                 indiceCidadeOrigem = i;
+                break;
+            }
 
         for (int i = 0; i < cidades.size(); i++)
-            if (cidades.get(i).getNome().equals(cidadeDeDestino))
+            if (cidades.get(i).getNome().equals(cidadeDeDestino)) {
                 indiceCidadeDestino = i;
+                break;
+            }
 
         String menorCaminho = "";
 
@@ -189,7 +196,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             menorCaminho = oGrafo.caminho(indiceCidadeOrigem, indiceCidadeDestino);
 
         TextView tvMenorCaminho = findViewById(R.id.tvMenorCaminho);
-        tvMenorCaminho.setText(menorCaminho);
+        if (menorCaminho.equals("Não há caminho."))
+            tvMenorCaminho.setText(menorCaminho);
+        else
+            tvMenorCaminho.setText("Menor caminho: "+ menorCaminho);
+
+
     }
 
     public void desenharNoMapa(){

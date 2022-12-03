@@ -24,7 +24,7 @@ public class Grafo
     DistOriginal[] percurso; // vetor que guarda os caminhos que vão sendo encontrados
     int infinito = Integer.MAX_VALUE;
     int verticeAtual;     // global que indica o vértice atualmente sendo visitado
-    int doInicioAteAtual; // global usada para ajustar menor caminho com Djikstra
+    long doInicioAteAtual; // global usada para ajustar menor caminho com Djikstra
     int nTree;
 
     public Grafo()
@@ -297,7 +297,7 @@ public class Grafo
         for (int nTree = 0; nTree < numVerts; nTree++)
         {
             int indiceDoMenor = obterMenor();
-            int distanciaMinima = percurso[indiceDoMenor].getDistancia();
+            long distanciaMinima = percurso[indiceDoMenor].getDistancia();
 
             verticeAtual = indiceDoMenor;
             doInicioAteAtual = percurso[indiceDoMenor].getDistancia();
@@ -311,7 +311,7 @@ public class Grafo
 
     public int obterMenor()
     {
-        int distanciaMinima = infinito;
+        long distanciaMinima = infinito;
         int indiceDaMinima = 0;
         for (int j = 0; j < numVerts; j++)
         {
@@ -332,8 +332,8 @@ public class Grafo
             if (!vertices[coluna].isFoiVisitado())
             {
                 int atualAteMargem = matriz[verticeAtual][coluna];
-                int doInicioAteMargem = doInicioAteAtual + atualAteMargem;
-                int distanciaDoCaminho = percurso[coluna].getDistancia();
+                long doInicioAteMargem = doInicioAteAtual + atualAteMargem;
+                long distanciaDoCaminho = percurso[coluna].getDistancia();
 
                 if (doInicioAteMargem < distanciaDoCaminho)
                 {
