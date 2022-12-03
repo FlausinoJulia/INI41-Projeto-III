@@ -97,28 +97,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             oGrafo.novoVertice(cidade.getNome());
         }
 
-        Button btnBacktracking = findViewById(R.id.btnRecursao);
-        btnBacktracking.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickBacktracking();
-            }
-        });
-
-        Button btnDijkstra = findViewById(R.id.btnDijkstra);
-        btnDijkstra.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickDijkstra();
-            }
-        });
-
-        Toast.makeText(this, "Selecione as cidades de origem de destino e o critério de comparação de caminhos.", Toast.LENGTH_LONG).show();
-    }
-
-    public void onClickBacktracking()
-    {
-        // criando arestas no grafo para representar cada ligação entre cidades
+        // preenchendo o grafo (inicialmente o critério é distância)
         for (Caminho caminho : caminhos)
         {
             int indiceOrigem = -1, indiceDestino = -1;
@@ -142,21 +121,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             if (indiceOrigem != -1 && indiceDestino != -1)
             {
-                switch (criterioDeComparacao)
-                {
-                    case "Distância":
-                        oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getDistancia());
-                        break;
-                    case "Tempo":
-                        oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getTempo());
-                        break;
-                    case "Custo":
-                        oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getCusto());
-                }
-
+                oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getDistancia());
             }
         }
 
+        Button btnBacktracking = findViewById(R.id.btnRecursao);
+        btnBacktracking.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickBacktracking();
+            }
+        });
+
+
+
+        Button btnDijkstra = findViewById(R.id.btnDijkstra);
+        btnDijkstra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickDijkstra();
+            }
+        });
+    }
+
+    public void onClickBacktracking()
+    {
         cidadeDeOrigem = spinnerOrigem.getSelectedItem().toString();
         cidadeDeDestino = spinnerDestino.getSelectedItem().toString();
 
@@ -184,45 +173,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void onClickDijkstra()
     {
-        // criando arestas no grafo para representar cada ligação entre cidades
-        for (Caminho caminho : caminhos)
-        {
-            int indiceOrigem = -1, indiceDestino = -1;
-
-            for (int i = 0; i < cidades.size(); i++) {
-                if (cidades.get(i).getNome().equals(caminho.getCidadeDeOrigem()))
-                {
-                    indiceOrigem = i;
-                    break;
-                }
-
-            }
-
-            for (int i = 0; i < cidades.size(); i++) {
-                if (cidades.get(i).getNome().equals(caminho.getCidadeDeDestino()))
-                {
-                    indiceDestino = i;
-                    break;
-                }
-            }
-
-            if (indiceOrigem != -1 && indiceDestino != -1)
-            {
-                switch (criterioDeComparacao)
-                {
-                    case "Distância":
-                        oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getDistancia());
-                        break;
-                    case "Tempo":
-                        oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getTempo());
-                        break;
-                    case "Custo":
-                        oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getCusto());
-                }
-
-            }
-        }
-
         int indiceCidadeOrigem = -1, indiceCidadeDestino = -1;
 
         for (int i = 0; i < cidades.size(); i++)
@@ -274,6 +224,45 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             case R.id.spinnerCriterios:
                 criterioDeComparacao = texto;
+
+                // atualizando arestas no grafo para representar cada ligação entre cidades
+                for (Caminho caminho : caminhos)
+                {
+                    int indiceOrigem = -1, indiceDestino = -1;
+
+                    for (int i = 0; i < cidades.size(); i++) {
+                        if (cidades.get(i).getNome().equals(caminho.getCidadeDeOrigem()))
+                        {
+                            indiceOrigem = i;
+                            break;
+                        }
+
+                    }
+
+                    for (int i = 0; i < cidades.size(); i++) {
+                        if (cidades.get(i).getNome().equals(caminho.getCidadeDeDestino()))
+                        {
+                            indiceDestino = i;
+                            break;
+                        }
+                    }
+
+                    if (indiceOrigem != -1 && indiceDestino != -1)
+                    {
+                        switch (criterioDeComparacao)
+                        {
+                            case "Distância":
+                                oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getDistancia());
+                                break;
+                            case "Tempo":
+                                oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getTempo());
+                                break;
+                            case "Custo":
+                                oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getCusto());
+                        }
+
+                    }
+                }
                 break;
             case R.id.spinner:  // spinner de origem
                 cidadeDeOrigem = texto;
