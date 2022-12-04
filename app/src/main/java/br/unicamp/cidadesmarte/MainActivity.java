@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,6 +36,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Grafo oGrafo;
     private Spinner spinnerCriterios, spinnerOrigem, spinnerDestino;
     private ListView lvCaminhos;
+    private TextView tvMenorCaminho;
+
+    // para desenhar no mapa
+    private Canvas canvas;
+    private Bitmap bitmap, mutableBitmap;
+    private Paint paint;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // associando lvCaminhos com o list view do layout
         lvCaminhos = (ListView) findViewById(R.id.lvCaminhos);
+
+        // associando tvMenorCaminho com o text view do layout
+        tvMenorCaminho = findViewById(R.id.tvMenorCaminho);
 
         // preenchendo o spinner de critérios //
         spinnerCriterios  = (Spinner) findViewById(R.id.spinnerCriterios);
@@ -62,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // spinners para o usuário selecionar a cidade de origem e destino desejadas
         spinnerOrigem  = (Spinner) findViewById(R.id.spinner);
         spinnerDestino = (Spinner) findViewById(R.id.spinner2);
+
+        spinnerOrigem.setOnItemSelectedListener(this);
+        spinnerDestino.setOnItemSelectedListener(this);
 
         // array adapter das cidades de origem para o spinner origem
         ArrayAdapter<Cidade> adapter = new ArrayAdapter<Cidade>(this, android.R.layout.simple_spinner_item, cidades);
@@ -163,8 +178,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (indiceCidadeOrigem != -1 && indiceCidadeDestino != -1)
             try {
                 todosOsCaminhos = oGrafo.acharTodosOsCaminhosRec(indiceCidadeOrigem, indiceCidadeDestino);
+
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, todosOsCaminhos);
                 lvCaminhos.setAdapter(adapter);
+
+                if (todosOsCaminhos.size() == 0)
+                    Toast.makeText(this, "Nenhum caminho encontrado.", Toast.LENGTH_LONG).show();
             }
             catch (Exception erro)
             {} // já verificamos no if
@@ -193,36 +212,97 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String menorCaminho = "";
 
         if (indiceCidadeOrigem != -1 && indiceCidadeDestino != -1)
-            menorCaminho = oGrafo.caminho(indiceCidadeOrigem, indiceCidadeDestino);
+            menorCaminho = oGrafo.menorCaminho(indiceCidadeOrigem, indiceCidadeDestino);
 
-        TextView tvMenorCaminho = findViewById(R.id.tvMenorCaminho);
         if (menorCaminho.equals("Não há caminho."))
             tvMenorCaminho.setText(menorCaminho);
-        else
-            tvMenorCaminho.setText("Menor caminho: "+ menorCaminho);
+        else {
+            desenharCaminho(menorCaminho);
+            tvMenorCaminho.setText("Menor caminho: " + menorCaminho);
+        }
 
 
     }
 
+    public void desenharCaminho(String caminho)
+    {
+        String[] cidadesDoCaminho = caminho.split(" --> ");
+        paint.setColor(Color.BLUE);
+        paint.setStrokeWidth(20);
+
+        Cidade origem = null, destino = null;
+
+        // vamos da primeira até a penúltima cidade
+        for (int i = 0; i < cidadesDoCaminho.length - 1; i++)
+        {
+            for (Cidade cidade : cidades)
+            {
+                if (cidade.getNome().equals(cidadesDoCaminho[i]))
+                    origem = cidade;
+            }
+
+            for (Cidade cidade : cidades)
+            {
+                if (cidade.getNome().equals(cidadesDoCaminho[i + 1]))
+                    destino = cidade;
+            }
+
+            if (origem != null && destino != null)
+            {
+                float width = bitmap.getWidth();
+                float height = bitmap.getHeight();
+
+                float xOrigem = (float) origem.getX() * width;
+                float yOrigem = (float) origem.getY() * height;
+
+                float xDestino = (float) destino.getX() * width;
+                float yDestino = (float) destino.getY() * height;
+
+                canvas.drawCircle(xOrigem, yOrigem, 20, paint);
+                canvas.drawText(origem.getNome(), xOrigem + 10, yOrigem - 30, paint);
+
+                canvas.drawCircle(xDestino, yDestino, 20, paint);
+                canvas.drawText(destino.getNome(), xDestino + 10, yDestino - 30, paint);
+
+                canvas.drawLine(xOrigem, yOrigem, xDestino, yDestino, paint);
+            }
+        }
+
+        imageView.setImageBitmap(mutableBitmap);
+    }
+
     public void desenharNoMapa(){
+
         BitmapFactory.Options myOptions = new BitmapFactory.Options();
         myOptions.inDither = true;
         myOptions.inScaled = false;
-        myOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;// important
+        myOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
         myOptions.inPurgeable = true;
 
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mapa,myOptions);
-        Paint paint = new Paint();
+        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mapa,myOptions);
+        paint = new Paint();
         paint.setAntiAlias(true);
-        paint.setColor(Color.BLUE);
+        paint.setColor(Color.BLACK);
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextSize(80); // tamanho do texto
+        paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD)); // negrito
+        paint.setStyle(Paint.Style.FILL);
 
         Bitmap workingBitmap = Bitmap.createBitmap(bitmap);
-        Bitmap mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
-        Canvas canvas = new Canvas(mutableBitmap);
-        canvas.drawCircle(60, 50, 25, paint);
+        canvas = new Canvas(mutableBitmap);
+        for (Cidade cidade : cidades)
+        {
+            float x = (float) cidade.getX() * bitmap.getWidth();
+            float y = (float) cidade.getY() * bitmap.getHeight();
+            String nome = cidade.getNome();
 
-        ImageView imageView = (ImageView)findViewById(R.id.imgMapa);
+            canvas.drawCircle(x, y, 20, paint);
+            canvas.drawText(nome, x + 10, y - 30, paint);
+        }
+
+        imageView = (ImageView)findViewById(R.id.imgMapa);
         imageView.setAdjustViewBounds(true);
         imageView.setImageBitmap(mutableBitmap);
     }
@@ -235,52 +315,68 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         switch (parent.getId())
         {
             case R.id.spinnerCriterios:
-                criterioDeComparacao = texto;
-
-                // atualizando arestas no grafo para representar cada ligação entre cidades
-                for (Caminho caminho : caminhos)
+                if (!texto.equals(criterioDeComparacao))
                 {
-                    int indiceOrigem = -1, indiceDestino = -1;
+                    tvMenorCaminho.setText("");
+                    criterioDeComparacao = texto;
 
-                    for (int i = 0; i < cidades.size(); i++) {
-                        if (cidades.get(i).getNome().equals(caminho.getCidadeDeOrigem()))
-                        {
-                            indiceOrigem = i;
-                            break;
-                        }
-
-                    }
-
-                    for (int i = 0; i < cidades.size(); i++) {
-                        if (cidades.get(i).getNome().equals(caminho.getCidadeDeDestino()))
-                        {
-                            indiceDestino = i;
-                            break;
-                        }
-                    }
-
-                    if (indiceOrigem != -1 && indiceDestino != -1)
+                    // atualizando arestas no grafo para representar cada ligação entre cidades
+                    for (Caminho caminho : caminhos)
                     {
-                        switch (criterioDeComparacao)
-                        {
-                            case "Distância":
-                                oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getDistancia());
+                        int indiceOrigem = -1, indiceDestino = -1;
+
+                        for (int i = 0; i < cidades.size(); i++) {
+                            if (cidades.get(i).getNome().equals(caminho.getCidadeDeOrigem()))
+                            {
+                                indiceOrigem = i;
                                 break;
-                            case "Tempo":
-                                oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getTempo());
-                                break;
-                            case "Custo":
-                                oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getCusto());
+                            }
+
                         }
 
+                        for (int i = 0; i < cidades.size(); i++) {
+                            if (cidades.get(i).getNome().equals(caminho.getCidadeDeDestino()))
+                            {
+                                indiceDestino = i;
+                                break;
+                            }
+                        }
+
+                        if (indiceOrigem != -1 && indiceDestino != -1)
+                        {
+                            switch (criterioDeComparacao)
+                            {
+                                case "Distância":
+                                    oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getDistancia());
+                                    break;
+                                case "Tempo":
+                                    oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getTempo());
+                                    break;
+                                case "Custo":
+                                    oGrafo.novaAresta(indiceOrigem, indiceDestino, caminho.getCusto());
+                            }
+
+                        }
                     }
                 }
                 break;
             case R.id.spinner:  // spinner de origem
-                cidadeDeOrigem = texto;
+                if (!texto.equals(cidadeDeOrigem))
+                {
+                    tvMenorCaminho.setText("");
+                    lvCaminhos.setAdapter(null);
+
+                    cidadeDeOrigem = texto;
+                }
                 break;
             case R.id.spinner2: // spinner de destino
-                cidadeDeDestino = texto;
+                if (!texto.equals(cidadeDeDestino))
+                {
+                    tvMenorCaminho.setText("");
+                    lvCaminhos.setAdapter(null);
+
+                    cidadeDeDestino = texto;
+                }
                 break;
         }
     }

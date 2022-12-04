@@ -283,30 +283,35 @@ public class Grafo
     }
 
     // DIJKSTRA
-    public String caminho (int inicioDoPercurso, int finalDoPercurso)
+    public String menorCaminho (int inicioDoPercurso, int finalDoPercurso)
     {
-        limparFoiVisitado();
-
-        vertices[inicioDoPercurso].setFoiVisitado(true);
-        for (int j = 0; j < numVerts; j++)
+        if (inicioDoPercurso == finalDoPercurso)
+            return "Não há caminho.";
+        else
         {
-            int tempDist = matriz[inicioDoPercurso][j];
-            percurso[j] = new DistOriginal(inicioDoPercurso, tempDist);
+            limparFoiVisitado();
+
+            vertices[inicioDoPercurso].setFoiVisitado(true);
+            for (int j = 0; j < numVerts; j++)
+            {
+                int tempDist = matriz[inicioDoPercurso][j];
+                percurso[j] = new DistOriginal(inicioDoPercurso, tempDist);
+            }
+
+            for (int nTree = 0; nTree < numVerts; nTree++)
+            {
+                int indiceDoMenor = obterMenor();
+                long distanciaMinima = percurso[indiceDoMenor].getDistancia();
+
+                verticeAtual = indiceDoMenor;
+                doInicioAteAtual = percurso[indiceDoMenor].getDistancia();
+
+                vertices[verticeAtual].setFoiVisitado(true);
+                ajustarMenorCaminho();
+            }
+
+            return exibirPercursos(inicioDoPercurso, finalDoPercurso);
         }
-
-        for (int nTree = 0; nTree < numVerts; nTree++)
-        {
-            int indiceDoMenor = obterMenor();
-            long distanciaMinima = percurso[indiceDoMenor].getDistancia();
-
-            verticeAtual = indiceDoMenor;
-            doInicioAteAtual = percurso[indiceDoMenor].getDistancia();
-
-            vertices[verticeAtual].setFoiVisitado(true);
-            ajustarMenorCaminho();
-        }
-
-        return exibirPercursos(inicioDoPercurso, finalDoPercurso);
     }
 
     public int obterMenor()
@@ -376,7 +381,7 @@ public class Grafo
                 resultado += " --> ";
         }
         if ((cont == 1) && (percurso[finalDoPercurso].getDistancia() == infinito))
-            resultado = "Não há caminho";
+            resultado = "Não há caminho.";
         else
             resultado += " --> " + vertices[finalDoPercurso].getRotulo();
 
@@ -396,15 +401,27 @@ public class Grafo
 
     public List<String> acharTodosOsCaminhosRec (int origem, int destino) throws Exception
     {
-        if (destino >= numVerts || destino < 0 || origem >= numVerts || origem < 0)
-            throw new Exception("Esse vértice não existe no grafo");
+        if (destino >= numVerts || destino < 0)
+            throw new Exception("O vértice de destino não existe no grafo");
+
+        if (origem >= numVerts || origem < 0)
+            throw new Exception("O vértice de origem não existe no grafo");
+
 
         List<String> caminhos = new ArrayList<String>();
         String caminho = "";
 
-        limparFoiVisitado();
+        if (origem == destino)
+        {
+            caminho = "Vértice de origem é igual ao vértice de destino.";
+            caminhos.add(caminho);
+        }
+        else
+        {
+            limparFoiVisitado();
 
-        acharTodosOsCaminhosRec(origem, destino, caminhos, caminho);
+            acharTodosOsCaminhosRec(origem, destino, caminhos, caminho);
+        }
 
         return caminhos;
     }

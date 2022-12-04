@@ -53,6 +53,7 @@
 
     <TextView
         android:id="@+id/textView"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -111,6 +112,7 @@
 
     <Button
         android:id="@+id/btnRecursao"
+        android:backgroundTint="@color/purple_500"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Backtracking"
@@ -126,6 +128,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Dijkstra"
+        android:backgroundTint="@color/purple_500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.299"
@@ -162,7 +165,7 @@
                 android:gravity="center"
                 android:text=""
                 android:layout_marginTop="2dp"
-                android:textColor="#0015CF"
+                android:textColor="@color/purple_500"
                 android:textSize="15sp"
                 android:textStyle="bold" />
         </LinearLayout>
