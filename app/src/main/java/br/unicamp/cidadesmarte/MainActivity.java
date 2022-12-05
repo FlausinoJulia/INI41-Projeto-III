@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,8 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -59,7 +62,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         lvCaminhos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                
+                paint.setColor(Color.BLUE);
+
+                view.setSelected(true);
+                String caminho = (String) adapterView.getItemAtPosition(i);
+                desenharCaminho(caminho);
             }
         });
 
@@ -233,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             tvMenorCaminho.setText("Menor caminho: " + menorCaminho);
         }
 
+        paint.setColor(Color.RED);
         desenharCaminho(menorCaminho);
     }
 
@@ -245,7 +253,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (!caminho.isEmpty() && !caminho.equals("Não há caminho."))
         {
             String[] cidadesDoCaminho = caminho.split(" --> ");
-            paint.setColor(Color.BLUE);
             paint.setStrokeWidth(20);
 
             Cidade origem = null, destino = null;
