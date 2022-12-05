@@ -3,6 +3,11 @@ package br.unicamp.cidadesmarte;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+    Danyelle Nogueira França 21232
+    Julia Flausino da Silva  21241
+*/
+
 public class PilhaVetor<Dado> implements IStack<Dado>
 {
     private Dado[] p;

@@ -31,6 +31,11 @@ import com.google.gson.reflect.TypeToken;
 
 import org.w3c.dom.Text;
 
+/*
+    Danyelle Nogueira França 21232
+    Julia Flausino da Silva  21241
+*/
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private Cidade[] cidades;
@@ -369,6 +374,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             bitmapCaminho = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
             canvasCaminho = new Canvas(bitmapCaminho);
             canvasCaminho.drawBitmap(mutableBitmap, 0, 0, paint);
+            imageView.setImageBitmap(bitmapCaminho);
         }
 
         switch (parent.getId())

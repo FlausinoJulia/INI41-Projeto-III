@@ -5,6 +5,11 @@ import androidx.core.app.unusedapprestrictions.IUnusedAppRestrictionsBackportCal
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+    Danyelle Nogueira França 21232
+    Julia Flausino da Silva  21241
+*/
+
 public class FilaVetor<Tipo> implements IQueue<Tipo> {
     public static int MAXIMO = 500;   // tamanho default do vetor F
     private int posicoes;     // tamanho dado pela aplicação

@@ -1,5 +1,10 @@
 package br.unicamp.cidadesmarte;
 
+/*
+    Danyelle Nogueira França 21232
+    Julia Flausino da Silva  21241
+*/
+
 public class DistOriginal // distancia desde o original
 {
     public long distancia;

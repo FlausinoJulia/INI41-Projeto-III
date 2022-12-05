@@ -12,6 +12,11 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
+/*
+    Danyelle Nogueira França 21232
+    Julia Flausino da Silva  21241
+*/
+
 public class Grafo
 {
     private final int NUM_VERTICES = 100;
@@ -22,8 +27,8 @@ public class Grafo
     // DIJKSTRA
     DistOriginal[] percurso; // vetor que guarda os caminhos que vão sendo encontrados
     int infinito = Integer.MAX_VALUE;
-    int verticeAtual;     // global que indica o vértice atualmente sendo visitado
-    long doInicioAteAtual; // global usada para ajustar menor caminho com Djikstra
+    int verticeAtual;        // global que indica o vértice atualmente sendo visitado
+    long doInicioAteAtual;   // global usada para ajustar menor caminho com Djikstra
     int nTree;
 
     public Grafo()
@@ -180,38 +185,63 @@ public class Grafo
     public void percursoEmProfundidade(TextView tv)
     {
         tv.setText("");
-        Stack<Integer> gPilha = new Stack<Integer>();
+        PilhaVetor<Integer> gPilha = new PilhaVetor<>();
+        // Stack<Integer> gPilha = new Stack<Integer>();
 
         // limpando o "foi visitado" de todos os vertices
         limparFoiVisitado();
 
         vertices[0].setFoiVisitado(true);
         exibirVertice(0, tv);
-        gPilha.push(0);
-
-        int v;
-        while (gPilha.size() > 0)
+        try
         {
-            v = obterVerticeAdjacenteNaoVisitado(gPilha.peek());
+            gPilha.empilhar(0);
+        }
+        catch (Exception overflowPilha)
+        {
+            Log.wtf("ErroClasseGrafo", "Overflow da pilha no percurso em profundidade.");
+        }
+
+
+        int v = -1;
+        while (gPilha.getTamanho() > 0)
+        {
+            try
+            {
+                v = obterVerticeAdjacenteNaoVisitado(gPilha.oTopo());
+            }
+            catch (Exception underflowPilha)
+            {} // não tratamos porque já checamos que ela não tá vazia no while
+
             if (v == -1)
-                gPilha.pop();
+                try {
+                    gPilha.desempilhar();
+                }
+                catch (Exception underflowPilha)
+                {} // não tratamos porque já checamos que ela não tá vazia no while
             else
             {
                 vertices[v].setFoiVisitado(true);
                 exibirVertice(v, tv);
-                gPilha.push(v);
+                try
+                {
+                    gPilha.empilhar(v);
+                }
+                catch (Exception overflowPilha)
+                {
+                    Log.wtf("ErroClasseGrafo", "Overflow da pilha no percurso em profundidade.");
+                }
             }
         }
 
         // limpando o "foi visitado" de todos os vertices
-        for (int i = 0; i <= numVerts - 1; i++)
-            vertices[i].setFoiVisitado(false);
+        limparFoiVisitado();
     }
 
     public void processarNo(int i)
     {
         String rotulo = vertices[i].getRotulo();
-        Log.i("rotulo", rotulo);
+        Log.i("Rotulo", rotulo);
     }
 
     public void percursoEmProfundidadeRec(int part)
@@ -228,45 +258,90 @@ public class Grafo
     public void percursoPorLargura(TextView tv)
     {
         tv.setText("");
-        Queue<Integer> gQueue = null;
+        FilaVetor<Integer> gQueue = new FilaVetor<>();
+        // Queue<Integer> gQueue = null;
         vertices[0].setFoiVisitado(true);
         exibirVertice(0, tv);
-        gQueue.add(0); // vai adicionar no null?
-        int vert1, vert2;
-        while (gQueue.size() > 0 )
+
+        try {
+            gQueue.enfileirar(0);
+        }
+        catch (Exception overflowFila)
         {
-            vert1 = gQueue.remove();
+            Log.wtf("ErroClasseGrafo", "Overflow da fila no percurso por largura.");
+        }
+
+        int vert1 = -1, vert2;
+        while (gQueue.getTamanho() > 0)
+        {
+            try {
+                vert1 = gQueue.retirar();
+            }
+            catch (Exception underflowFila)
+            {} // já checamos no while que ela n tá vazia
+
             vert2 = obterVerticeAdjacenteNaoVisitado(vert1);
             while (vert2 != -1)
             {
                 vertices[vert2].setFoiVisitado(true);
                 exibirVertice(vert2, tv);
-                gQueue.add(vert2);
+                try {
+                    gQueue.enfileirar(vert2);
+                }
+                catch (Exception overflowFila)
+                {
+                    Log.wtf("ErroClasseGrafo", "Overflow da fila no percurso por largura.");
+                }
+
                 vert2 = obterVerticeAdjacenteNaoVisitado(vert1);
             }
         }
-        for (int i = 0; i < numVerts; i++)
-            vertices[i].setFoiVisitado(false);
+
+        limparFoiVisitado();
     }
 
     // ARVORE GERADORA MINIMA //
     public void arvoreGeradoraMinima(int primeiro, TextView tv)
     {
         tv.setText("");
-        Stack<Integer> gPilha = new Stack<Integer>();
+        PilhaVetor<Integer> gPilha = new PilhaVetor<>();
+
         vertices[primeiro].setFoiVisitado(true);
-        gPilha.push(primeiro);
-        int currVertex, ver;
-        while (gPilha.size() > 0)
+        try {
+            gPilha.empilhar(primeiro);
+        }
+        catch (Exception overflowPilha)
         {
-            currVertex = gPilha.peek();
+            Log.wtf("ErroClasseGrafo", "Overflow da pilha na árvore geradora mínima.");
+        }
+
+        int currVertex = -1, ver;
+        while (gPilha.getTamanho() > 0)
+        {
+            try {
+                currVertex = gPilha.oTopo();
+            }
+            catch (Exception underflowPilha)
+            {} // já checamos que não ta vazia no while
+
             ver = obterVerticeAdjacenteNaoVisitado(currVertex);
             if (ver == -1)
-                gPilha.pop();
+                try {
+                    gPilha.desempilhar();
+                }
+                catch (Exception underflowPilha)
+                {} // já checamos que não ta vazia no while
             else
             {
                 vertices[ver].setFoiVisitado(true);
-                gPilha.push(ver);
+                try {
+                    gPilha.empilhar(ver);
+                }
+                catch (Exception overflowPilha)
+                {
+                    Log.wtf("ErroClasseGrafo", "Overflow da pilha na árvore geradora mínima.");
+                }
+
                 exibirVertice(currVertex, tv);
                 String texto = tv.getText().toString() + "--> ";
                 tv.setText(texto);
@@ -303,12 +378,14 @@ public class Grafo
             // percorre cada vértice
             for (int nTree = 0; nTree < numVerts; nTree++)
             {
+                // pega o movimento de menor distância entre o vértice atual e qualquer outro vértice
                 int indiceDoMenor = obterMenor();
                 long distanciaMinima = percurso[indiceDoMenor].getDistancia();
 
                 verticeAtual = indiceDoMenor;
-                doInicioAteAtual = percurso[indiceDoMenor].getDistancia();
+                doInicioAteAtual = distanciaMinima;
 
+                // setamos vertice atual como visitado, já que já verificamos a menor distãncia
                 vertices[verticeAtual].setFoiVisitado(true);
                 ajustarMenorCaminho();
             }
@@ -323,6 +400,9 @@ public class Grafo
         int indiceDaMinima = 0;
         for (int j = 0; j < numVerts; j++)
         {
+            // se o vértice não foi visitado e a distância do atual até esse vértice é menor do
+            // que a distância mínima, a distância mínima recebe a "nova menor distância" e armazenamos
+            // o indice desse caminho com distância mínima
             if (!(vertices[j].isFoiVisitado()) && (percurso[j].getDistancia() < distanciaMinima))
             {
                 distanciaMinima = percurso[j].getDistancia();
@@ -330,21 +410,28 @@ public class Grafo
             }
         }
 
-        return indiceDaMinima;
+        return indiceDaMinima; // retornamos o indice da minima
     }
 
     public void ajustarMenorCaminho()
     {
+        // percorremos cada coluna da linha do vértice atual
         for (int coluna = 0; coluna < numVerts; coluna++)
         {
             if (!vertices[coluna].isFoiVisitado())
             {
+                // pegamos a distancia do atual até a saída que está sendo verificada agora
                 int atualAteMargem = matriz[verticeAtual][coluna];
+                // somamos atualAteMargem com doInicioAteMargem para ver a distancia do vértice de
+                // todo o caminho até a saída atual (coluna) - do inicio do percurso até essa saída
                 long doInicioAteMargem = doInicioAteAtual + atualAteMargem;
+                // distancia do caminho direto entre o vertice de origem até a saida atual
                 long distanciaDoCaminho = percurso[coluna].getDistancia();
 
+                // se a distancia do caminho atual for maior que a distancia do caminho inteiro
                 if (doInicioAteMargem < distanciaDoCaminho)
                 {
+                    // atualizamos a ligação para o caminho menor (doInicioAteAMargem)
                     percurso[coluna].setVerticePai(verticeAtual);
                     percurso[coluna].setDistancia(doInicioAteMargem);
                 }
@@ -352,35 +439,44 @@ public class Grafo
         }
     }
 
-
+    // forma a string para exibir o percurso
     public String exibirPercursos(int inicioDoPercurso, int finalDoPercurso)
     {
         String resultado = "";
-        for (int j = 0; j < numVerts; j++)
-        {
-            resultado += vertices[j].getRotulo() + "=";
-            if (percurso[j].getDistancia() == infinito)
-                resultado += "inf";
-            else
-                resultado += percurso[j].getDistancia()+" ";
-            String pai = vertices[percurso[j].getVerticePai()].getRotulo();
-            resultado += "(" + pai + ") ";
-        }
 
         int onde = finalDoPercurso;
-        Stack<String> pilha = new Stack<String>();
+        PilhaVetor<String> pilha = new PilhaVetor<String>();
         int cont = 0;
+        // vamos percorrendo os vértices começando do fim do percurso até chegar no inicio do percurso
         while (onde != inicioDoPercurso)
         {
+            // onde recebe o vértice pai do percurso
             onde = percurso[onde].getVerticePai();
-            pilha.push(vertices[onde].getRotulo());
+            // empilhamos o nome da cidade da qual estamos saindo
+            try {
+                pilha.empilhar(vertices[onde].getRotulo());
+            }
+            catch (Exception overflowPilha)
+            {
+                Log.wtf("ErroClasseGrafo", "Overflow da pilha no exibir percursos.");
+            }
+
             cont++;
         }
-        resultado = "";
-        while (pilha.size() != 0)
+
+        while (pilha.getTamanho() != 0)
         {
-            resultado += pilha.pop();
-            if (pilha.size() != 0)
+            // vamos desempilhando os nomes das cidades percorridas nesse caminho, separando-as com "-->"
+
+            try {
+                resultado += pilha.desempilhar();
+            }
+            catch (Exception underflowPilha)
+            {
+                Log.wtf("ErroClasseGrafo", "Underflow da pilha na árvore geradora mínima.");
+            }
+
+            if (pilha.getTamanho() != 0)
                 resultado += " --> ";
         }
         if ((cont == 1) && (percurso[finalDoPercurso].getDistancia() == infinito))

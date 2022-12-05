@@ -5,6 +5,11 @@ import android.content.Context;
 import java.io.IOException;
 import java.io.InputStream;
 
+/*
+    Danyelle Nogueira França 21232
+    Julia Flausino da Silva  21241
+*/
+
 public class Utils
 {
     static String getJsonFromAssets(Context context, String fileName)
