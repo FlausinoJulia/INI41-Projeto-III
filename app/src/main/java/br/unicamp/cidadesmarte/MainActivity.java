@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -38,11 +40,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ListView lvCaminhos;
     private TextView tvMenorCaminho;
 
-    // para desenhar no mapa
+    // para desenhar no mapa //
     private Canvas canvas;
-    private Bitmap bitmap, mutableBitmap;
+    private Bitmap bitmap, workingBitmap, mutableBitmap;
     private Paint paint;
     private ImageView imageView;
+    // desenhar caminhos //
+    private Bitmap bitmapCaminho;
+    private Canvas canvasCaminho;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // associando lvCaminhos com o list view do layout
         lvCaminhos = (ListView) findViewById(R.id.lvCaminhos);
+        lvCaminhos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                
+            }
+        });
 
         // associando tvMenorCaminho com o text view do layout
         tvMenorCaminho = findViewById(R.id.tvMenorCaminho);
@@ -179,11 +190,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             try {
                 todosOsCaminhos = oGrafo.acharTodosOsCaminhosRec(indiceCidadeOrigem, indiceCidadeDestino);
 
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, todosOsCaminhos);
-                lvCaminhos.setAdapter(adapter);
-
                 if (todosOsCaminhos.size() == 0)
                     Toast.makeText(this, "Nenhum caminho encontrado.", Toast.LENGTH_LONG).show();
+                else
+                {
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, todosOsCaminhos);
+                    lvCaminhos.setAdapter(adapter);
+                }
             }
             catch (Exception erro)
             {} // já verificamos no if
@@ -217,69 +230,74 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (menorCaminho.equals("Não há caminho."))
             tvMenorCaminho.setText(menorCaminho);
         else {
-            desenharCaminho(menorCaminho);
             tvMenorCaminho.setText("Menor caminho: " + menorCaminho);
         }
 
-
+        desenharCaminho(menorCaminho);
     }
 
     public void desenharCaminho(String caminho)
     {
-        String[] cidadesDoCaminho = caminho.split(" --> ");
-        paint.setColor(Color.BLUE);
-        paint.setStrokeWidth(20);
+        bitmapCaminho = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        canvasCaminho = new Canvas(bitmapCaminho);
+        canvasCaminho.drawBitmap(mutableBitmap, 0, 0, paint);
 
-        Cidade origem = null, destino = null;
-
-        // vamos da primeira até a penúltima cidade
-        for (int i = 0; i < cidadesDoCaminho.length - 1; i++)
+        if (!caminho.isEmpty() && !caminho.equals("Não há caminho."))
         {
-            for (Cidade cidade : cidades)
+            String[] cidadesDoCaminho = caminho.split(" --> ");
+            paint.setColor(Color.BLUE);
+            paint.setStrokeWidth(20);
+
+            Cidade origem = null, destino = null;
+
+            // vamos da primeira até a penúltima cidade
+            for (int i = 0; i < cidadesDoCaminho.length - 1; i++)
             {
-                if (cidade.getNome().equals(cidadesDoCaminho[i]))
-                    origem = cidade;
-            }
+                for (Cidade cidade : cidades)
+                {
+                    if (cidade.getNome().equals(cidadesDoCaminho[i]))
+                        origem = cidade;
+                }
 
-            for (Cidade cidade : cidades)
-            {
-                if (cidade.getNome().equals(cidadesDoCaminho[i + 1]))
-                    destino = cidade;
-            }
+                for (Cidade cidade : cidades)
+                {
+                    if (cidade.getNome().equals(cidadesDoCaminho[i + 1]))
+                        destino = cidade;
+                }
 
-            if (origem != null && destino != null)
-            {
-                float width = bitmap.getWidth();
-                float height = bitmap.getHeight();
+                if (origem != null && destino != null)
+                {
+                    float width = bitmap.getWidth();
+                    float height = bitmap.getHeight();
 
-                float xOrigem = (float) origem.getX() * width;
-                float yOrigem = (float) origem.getY() * height;
+                    float xOrigem = (float) origem.getX() * width;
+                    float yOrigem = (float) origem.getY() * height;
 
-                float xDestino = (float) destino.getX() * width;
-                float yDestino = (float) destino.getY() * height;
+                    float xDestino = (float) destino.getX() * width;
+                    float yDestino = (float) destino.getY() * height;
 
-                canvas.drawCircle(xOrigem, yOrigem, 20, paint);
-                canvas.drawText(origem.getNome(), xOrigem + 10, yOrigem - 30, paint);
+                    canvasCaminho.drawCircle(xOrigem, yOrigem, 20, paint);
+                    canvasCaminho.drawText(origem.getNome(), xOrigem + 10, yOrigem - 30, paint);
 
-                canvas.drawCircle(xDestino, yDestino, 20, paint);
-                canvas.drawText(destino.getNome(), xDestino + 10, yDestino - 30, paint);
+                    canvasCaminho.drawCircle(xDestino, yDestino, 20, paint);
+                    canvasCaminho.drawText(destino.getNome(), xDestino + 10, yDestino - 30, paint);
 
-                canvas.drawLine(xOrigem, yOrigem, xDestino, yDestino, paint);
+                    canvasCaminho.drawLine(xOrigem, yOrigem, xDestino, yDestino, paint);
+                }
             }
         }
 
-        imageView.setImageBitmap(mutableBitmap);
+        imageView.setImageBitmap(bitmapCaminho);
     }
 
     public void desenharNoMapa(){
-
         BitmapFactory.Options myOptions = new BitmapFactory.Options();
         myOptions.inDither = true;
         myOptions.inScaled = false;
         myOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
         myOptions.inPurgeable = true;
 
-        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mapa,myOptions);
+        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mapa, myOptions);
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(Color.BLACK);
@@ -288,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD)); // negrito
         paint.setStyle(Paint.Style.FILL);
 
-        Bitmap workingBitmap = Bitmap.createBitmap(bitmap);
+        workingBitmap = Bitmap.createBitmap(bitmap);
         mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
         canvas = new Canvas(mutableBitmap);
