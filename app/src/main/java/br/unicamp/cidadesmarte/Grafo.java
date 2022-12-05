@@ -18,7 +18,6 @@ public class Grafo
     private Vertice[] vertices;
     private int[][] matriz;
     int numVerts;
-    // DataGridView dgv; // aqui seria algum componente da activity?
 
     // DIJKSTRA
     DistOriginal[] percurso; // vetor que guarda os caminhos que vão sendo encontrados
@@ -29,7 +28,6 @@ public class Grafo
 
     public Grafo()
     {
-        // this.dgv = dgv; // dgv seria passado como parametro
         vertices = new Vertice[NUM_VERTICES];
         matriz = new int[NUM_VERTICES][NUM_VERTICES];
         numVerts = 0;
@@ -167,7 +165,6 @@ public class Grafo
     }
 
     // PERCURSO EM PROFUNDIDADE //
-
     // retorna a posicao do primeiro vértice adjacente não visitado do vértice v
     private int obterVerticeAdjacenteNaoVisitado(int v)
     {
@@ -282,22 +279,28 @@ public class Grafo
         limparFoiVisitado();
     }
 
-    // DIJKSTRA
+    // DIJKSTRA //
     public String menorCaminho (int inicioDoPercurso, int finalDoPercurso)
     {
+        // se saimos de um vértice para ir para ele mesmo, não há caminho
         if (inicioDoPercurso == finalDoPercurso)
             return "Não há caminho.";
         else
         {
+            // deixamos todos os vértices como não visitados
             limparFoiVisitado();
 
+            // visitamos o vértice de origem do percurso
             vertices[inicioDoPercurso].setFoiVisitado(true);
+            // percorremos cada coluna na linha do vértice de origem do percurso
             for (int j = 0; j < numVerts; j++)
             {
+                // guardamos o peso do movimento da origem para cada vertice do grafo no vetor percurso
                 int tempDist = matriz[inicioDoPercurso][j];
                 percurso[j] = new DistOriginal(inicioDoPercurso, tempDist);
             }
 
+            // percorre cada vértice
             for (int nTree = 0; nTree < numVerts; nTree++)
             {
                 int indiceDoMenor = obterMenor();
@@ -401,16 +404,18 @@ public class Grafo
 
     public List<String> acharTodosOsCaminhosRec (int origem, int destino) throws Exception
     {
+        // verificamos se os indices de origem e de destino são válidos
         if (destino >= numVerts || destino < 0)
             throw new Exception("O vértice de destino não existe no grafo");
 
         if (origem >= numVerts || origem < 0)
             throw new Exception("O vértice de origem não existe no grafo");
 
-
+        // criamos uma lista de caminhos e uma string caminho
         List<String> caminhos = new ArrayList<String>();
         String caminho = "";
 
+        // se o vértice de origem é o mesmo de destino, não temos caminhos
         if (origem == destino)
         {
             caminho = "Vértice de origem é igual ao vértice de destino.";
@@ -418,17 +423,21 @@ public class Grafo
         }
         else
         {
+            // setamos todos os vértices como não visitados
             limparFoiVisitado();
 
+            // chamada do método recursivo para achar todos os caminhos
             acharTodosOsCaminhosRec(origem, destino, caminhos, caminho);
         }
 
+        // retornamos a lista de caminhos
         return caminhos;
     }
 
+    // BACKTRACKING //
     private void acharTodosOsCaminhosRec(int atual, int destino, List<String> caminhos, String caminho)
     {
-        // setamos o vertice atual como visitado
+        // setamos o vertice atual como visitado e adicionamos ele no caminho
         vertices[atual].setFoiVisitado(true);
         if (caminho.equals(""))
         {
@@ -437,15 +446,15 @@ public class Grafo
         else
             caminho += " --> " + vertices[atual].getRotulo();
 
-
+        // se chegamos ao destino
         if (atual == destino)
         {
-            caminhos.add(caminho); // adicionamos o caminho encontrado na lista de caminho
-            caminho =  "";
+            caminhos.add(caminho); // adicionamos o caminho encontrado na lista de caminhos
+            caminho =  "";         // limpamos a string caminho para formar um novo caminho
         }
         else
         {
-            // percorro cada vértice partindo do vértice atual
+            // percorre cada vértice partindo do vértice atual
             for (int i = 0; i < numVerts; i++)
             {
                 // se encontro um vértice que ainda não foi visitado e que tem caminho
@@ -460,6 +469,7 @@ public class Grafo
         }
     }
 
+    // método que seta todos os vértices como não visitados
     private void limparFoiVisitado()
     {
         for (int j = 0; j < numVerts; j++)

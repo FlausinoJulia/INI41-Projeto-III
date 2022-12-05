@@ -33,7 +33,7 @@ import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private List<Cidade> cidades;
+    private Cidade[] cidades;
     private List<Caminho> caminhos;
     private final String[] CRITERIOS = {"Distância", "Tempo", "Custo"};
     private String criterioDeComparacao = "Distância";
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Paint paint;
     private ImageView imageView;
     // desenhar caminhos //
-    private Bitmap bitmapCaminho;
+    private Bitmap bitmapCaminho = null;
     private Canvas canvasCaminho;
 
     @Override
@@ -59,12 +59,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         // associando lvCaminhos com o list view do layout
         lvCaminhos = (ListView) findViewById(R.id.lvCaminhos);
+        // definindo o evento click dos itens do lvCaminhos
         lvCaminhos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                paint.setColor(Color.BLUE);
+                paint.setColor(Color.BLUE); // a cor dos elementos desenhados vai ser azul
 
-                view.setSelected(true);
+                view.setSelected(true); // marcamos a view como selected
+
+                // desenhamos o caminho selecionado
                 String caminho = (String) adapterView.getItemAtPosition(i);
                 desenharCaminho(caminho);
             }
@@ -84,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String jsonFileString = Utils.getJsonFromAssets(getApplicationContext(), "cidadesMarte.json");
 
         Gson gson = new Gson(); // cria uma instanica da classe gson
-        Type listaCidadesType = new TypeToken<List<Cidade>>() { }.getType();
+        Type listaCidadesType = new TypeToken<Cidade[]>() { }.getType();
 
         // converte um vetor de JSON para uma lista de objetos da classe Cidade
         cidades = gson.fromJson(jsonFileString, listaCidadesType);
@@ -110,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // aplicando o adapter de cidades de desitno para o spinner destino
         spinnerDestino.setAdapter(adapter2);
 
+        // desenhamos as cidades no mapa
+        imageView = (ImageView)findViewById(R.id.imgMapa);
         desenharNoMapa();
 
         // lendo o arquivo de caminhos //
@@ -120,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // converte um vetor de JSON para uma lista de objetos da classe Cidade
         caminhos = gson.fromJson(jsonFileString2, listaCaminhosType);
 
-        // instanciando um grafo
+        // instanciando o grafo
         oGrafo = new Grafo();
 
         // preenchendo o grafo //
@@ -135,22 +140,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             int indiceOrigem = -1, indiceDestino = -1;
 
-            for (int i = 0; i < cidades.size(); i++) {
-                if (cidades.get(i).getNome().equals(caminho.getCidadeDeOrigem()))
-                {
-                    indiceOrigem = i;
-                    break;
-                }
-
-            }
-
-            for (int i = 0; i < cidades.size(); i++) {
-                if (cidades.get(i).getNome().equals(caminho.getCidadeDeDestino()))
-                {
-                    indiceDestino = i;
-                    break;
-                }
-            }
+            // procuramos o indice das cidades de origem e de destino
+            indiceOrigem = procurarIndiceDaCidade(caminho.getCidadeDeOrigem());
+            indiceDestino = procurarIndiceDaCidade(caminho.getCidadeDeDestino());
 
             if (indiceOrigem != -1 && indiceDestino != -1)
             {
@@ -158,145 +150,175 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
 
+        // setamos o evento click do btnBacktracking
         Button btnBacktracking = findViewById(R.id.btnRecursao);
         btnBacktracking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickBacktracking();
+                onClickBacktracking(); // chamamos o método de click do botao
             }
         });
 
-
-
+        // setamos o evento click do btnDijkstra
         Button btnDijkstra = findViewById(R.id.btnDijkstra);
         btnDijkstra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickDijkstra();
+                onClickDijkstra(); // chamamos o método de click do botao
             }
         });
     }
 
+    // método que busca o indice da cidade passada como parâmetro no vetor de cidades //
+    public int procurarIndiceDaCidade(String nome)
+    {
+        // percorremos todo o vetor e se acharmos uma cidade com o mesmo nome passado
+        // como parâmetro retornamos o seu indice
+        for (int i = 0; i < cidades.length; i++) {
+            if (cidades[i].getNome().equals(nome))
+            {
+                return i;
+            }
+        }
+
+        return -1; // se não achamos, retornamos -1
+    }
+
+    // método click do botão de backtracking //
     public void onClickBacktracking()
     {
+        // pegamos as cidades de origem e de destino selecionadas
         cidadeDeOrigem = spinnerOrigem.getSelectedItem().toString();
         cidadeDeDestino = spinnerDestino.getSelectedItem().toString();
 
-        List<String> todosOsCaminhos = null;
         int indiceCidadeOrigem = -1, indiceCidadeDestino = -1;
 
-        for (int i = 0; i < cidades.size(); i++)
-            if (cidades.get(i).getNome().equals(cidadeDeOrigem))
-                indiceCidadeOrigem = i;
+        // procuramos os indices das cidades de origem e de destino
+        indiceCidadeOrigem = procurarIndiceDaCidade(cidadeDeOrigem);
+        indiceCidadeDestino = procurarIndiceDaCidade(cidadeDeDestino);
 
-        for (int i = 0; i < cidades.size(); i++)
-            if (cidades.get(i).getNome().equals(cidadeDeDestino))
-                indiceCidadeDestino = i;
-
+        List<String> todosOsCaminhos = null; // lista que armazenará todos os caminhos
         if (indiceCidadeOrigem != -1 && indiceCidadeDestino != -1)
             try {
+                // a lista todosOsCaminhos é preenchida
                 todosOsCaminhos = oGrafo.acharTodosOsCaminhosRec(indiceCidadeOrigem, indiceCidadeDestino);
 
                 if (todosOsCaminhos.size() == 0)
+                    // se nenhum caminho foi encontrado, avisamos o usuário
                     Toast.makeText(this, "Nenhum caminho encontrado.", Toast.LENGTH_LONG).show();
                 else
                 {
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, todosOsCaminhos);
+                    // se achamos caminhos, exibimos eles no lvCaminhos
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_view, R.id.itemDaLista, todosOsCaminhos);
                     lvCaminhos.setAdapter(adapter);
                 }
             }
             catch (Exception erro)
             {} // já verificamos no if
-
     }
 
+    // método click do botão de dijkstra //
     public void onClickDijkstra()
     {
+        // pegamos as cidades de origem e de destino selecionadas
         cidadeDeOrigem = spinnerOrigem.getSelectedItem().toString();
         cidadeDeDestino = spinnerDestino.getSelectedItem().toString();
 
         int indiceCidadeOrigem = -1, indiceCidadeDestino = -1;
 
-        for (int i = 0; i < cidades.size(); i++)
-            if (cidades.get(i).getNome().equals(cidadeDeOrigem)) {
-                indiceCidadeOrigem = i;
-                break;
-            }
+        // procuramos os indices das cidades de origem e de destino
+        indiceCidadeOrigem = procurarIndiceDaCidade(cidadeDeOrigem);
+        indiceCidadeDestino = procurarIndiceDaCidade(cidadeDeDestino);
 
-        for (int i = 0; i < cidades.size(); i++)
-            if (cidades.get(i).getNome().equals(cidadeDeDestino)) {
-                indiceCidadeDestino = i;
-                break;
-            }
-
-        String menorCaminho = "";
+        String menorCaminho = ""; // string que vai guardar o menor caminho
 
         if (indiceCidadeOrigem != -1 && indiceCidadeDestino != -1)
+            // pegamos o menor caminho utilizando dijkstra
             menorCaminho = oGrafo.menorCaminho(indiceCidadeOrigem, indiceCidadeDestino);
 
-        if (menorCaminho.equals("Não há caminho."))
-            tvMenorCaminho.setText(menorCaminho);
+        // exibimos o caminho no tvMenorCaminho
+        if (menorCaminho.equals("Não há caminho.") || menorCaminho.equals(""))
+            tvMenorCaminho.setText("Não há caminho.");
         else {
             tvMenorCaminho.setText("Menor caminho: " + menorCaminho);
         }
 
-        paint.setColor(Color.RED);
+        // exibimos o caminho em vermelho
+        paint.setColor(Color.parseColor("#B12D2D"));
         desenharCaminho(menorCaminho);
     }
 
     public void desenharCaminho(String caminho)
     {
+        // limpar caminho desenhado
         bitmapCaminho = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
         canvasCaminho = new Canvas(bitmapCaminho);
         canvasCaminho.drawBitmap(mutableBitmap, 0, 0, paint);
 
+        // se houver caminho a ser desenhado
         if (!caminho.isEmpty() && !caminho.equals("Não há caminho."))
         {
+            // pegamos o nome de cada cidade e guardamos num vetor
             String[] cidadesDoCaminho = caminho.split(" --> ");
-            paint.setStrokeWidth(20);
 
             Cidade origem = null, destino = null;
 
-            // vamos da primeira até a penúltima cidade
+            // vamos desenhando cada movimento do caminho, da primeira até a penúltima cidade
+            // (porque na última não damos mais nenhum passo)
             for (int i = 0; i < cidadesDoCaminho.length - 1; i++)
             {
+                // procurando a cidade de origem no vetor de cidades
                 for (Cidade cidade : cidades)
                 {
                     if (cidade.getNome().equals(cidadesDoCaminho[i]))
+                    {
                         origem = cidade;
+                        break;
+                    }
                 }
 
+                // procurando a cidade de destino no vetor de cidades
                 for (Cidade cidade : cidades)
                 {
                     if (cidade.getNome().equals(cidadesDoCaminho[i + 1]))
+                    {
                         destino = cidade;
+                        break;
+                    }
                 }
 
+                // se encontramos as duas cidades no vetor de cidades
                 if (origem != null && destino != null)
                 {
                     float width = bitmap.getWidth();
                     float height = bitmap.getHeight();
 
+                    // coordenadas da cidade de inicio do movimento
                     float xOrigem = (float) origem.getX() * width;
                     float yOrigem = (float) origem.getY() * height;
 
+                    // coordenadas da cidade de destino do movimento
                     float xDestino = (float) destino.getX() * width;
                     float yDestino = (float) destino.getY() * height;
 
+                    // pintamos de azul a bolinha e o nome das cidades de origem e de destino
                     canvasCaminho.drawCircle(xOrigem, yOrigem, 20, paint);
                     canvasCaminho.drawText(origem.getNome(), xOrigem + 10, yOrigem - 30, paint);
 
                     canvasCaminho.drawCircle(xDestino, yDestino, 20, paint);
                     canvasCaminho.drawText(destino.getNome(), xDestino + 10, yDestino - 30, paint);
 
+                    // desenhamos a linha que liga as duas cidades
                     canvasCaminho.drawLine(xOrigem, yOrigem, xDestino, yDestino, paint);
                 }
             }
         }
 
+        // exibimos no imageView
         imageView.setImageBitmap(bitmapCaminho);
     }
 
+    // método para desenhar no mapa os pontinhos e o nome de cada cidade //
     public void desenharNoMapa(){
         BitmapFactory.Options myOptions = new BitmapFactory.Options();
         myOptions.inDither = true;
@@ -307,8 +329,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mapa, myOptions);
         paint = new Paint();
         paint.setAntiAlias(true);
-        paint.setColor(Color.BLACK);
-        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setColor(Color.BLACK); // desenhando na cor preta
+        paint.setStrokeWidth(20); // tamanho das linhas a serem desenhadas
+        paint.setTextAlign(Paint.Align.CENTER); // alinhamento do texto
         paint.setTextSize(80); // tamanho do texto
         paint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD)); // negrito
         paint.setStyle(Paint.Style.FILL);
@@ -317,17 +340,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mutableBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
         canvas = new Canvas(mutableBitmap);
+
+        // desenhamos cada cidade
         for (Cidade cidade : cidades)
         {
+            // coordenadas x e y da cidade a ser desenhada
             float x = (float) cidade.getX() * bitmap.getWidth();
             float y = (float) cidade.getY() * bitmap.getHeight();
-            String nome = cidade.getNome();
+            String nome = cidade.getNome(); // nome da cidade
 
+            // desenhamos o circulo e o nome
             canvas.drawCircle(x, y, 20, paint);
             canvas.drawText(nome, x + 10, y - 30, paint);
         }
 
-        imageView = (ImageView)findViewById(R.id.imgMapa);
+        // exibimos no image view
         imageView.setAdjustViewBounds(true);
         imageView.setImageBitmap(mutableBitmap);
     }
@@ -337,11 +364,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         String texto = parent.getItemAtPosition(pos).toString();
 
+        // se temos um caminho desenhado no mapa, limpamos ele
+        if (bitmapCaminho != null) {
+            bitmapCaminho = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
+            canvasCaminho = new Canvas(bitmapCaminho);
+            canvasCaminho.drawBitmap(mutableBitmap, 0, 0, paint);
+        }
+
         switch (parent.getId())
         {
             case R.id.spinnerCriterios:
                 if (!texto.equals(criterioDeComparacao))
                 {
+                    // limpamos dijkstra e mudamos o critério
                     tvMenorCaminho.setText("");
                     criterioDeComparacao = texto;
 
@@ -350,25 +385,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     {
                         int indiceOrigem = -1, indiceDestino = -1;
 
-                        for (int i = 0; i < cidades.size(); i++) {
-                            if (cidades.get(i).getNome().equals(caminho.getCidadeDeOrigem()))
-                            {
-                                indiceOrigem = i;
-                                break;
-                            }
+                        // procuramos os indices das cidades de origem e de destino
+                        indiceOrigem = procurarIndiceDaCidade(caminho.getCidadeDeOrigem());
+                        indiceDestino = procurarIndiceDaCidade(caminho.getCidadeDeDestino());
 
-                        }
-
-                        for (int i = 0; i < cidades.size(); i++) {
-                            if (cidades.get(i).getNome().equals(caminho.getCidadeDeDestino()))
-                            {
-                                indiceDestino = i;
-                                break;
-                            }
-                        }
-
+                        // se encontramos as cidades no vetor
                         if (indiceOrigem != -1 && indiceDestino != -1)
                         {
+                            // preenchemos o grafo de acordo com o critério escolhido
                             switch (criterioDeComparacao)
                             {
                                 case "Distância":
@@ -388,18 +412,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.spinner:  // spinner de origem
                 if (!texto.equals(cidadeDeOrigem))
                 {
+                    // limpamos backtracking e dijkstra
                     tvMenorCaminho.setText("");
                     lvCaminhos.setAdapter(null);
 
+                    // trocamos a cidade de origem
                     cidadeDeOrigem = texto;
                 }
                 break;
             case R.id.spinner2: // spinner de destino
                 if (!texto.equals(cidadeDeDestino))
                 {
+                    // limpamos backtracking e dijkstra
                     tvMenorCaminho.setText("");
                     lvCaminhos.setAdapter(null);
 
+                    // trocamos a cidade de destino
                     cidadeDeDestino = texto;
                 }
                 break;
